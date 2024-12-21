@@ -4,7 +4,7 @@ def create_midi(file_name: str):
     midi = MidiFile()
     track = MidiTrack()
     midi.tracks.append(track)
-    print(f"New MIDI file created: {file_name}")
+    return midi
 
 def load_midi(file_path: str) -> MidiFile:
     midi = MidiFile(file_path)
