@@ -15,3 +15,4 @@ def load_midi(file_path: str) -> MidiFile:
 def save_midi(midi: MidiFile, file_path: str):
     midi.save(file_path)
     print(f"MIDI file saved: {file_path}")
+    
