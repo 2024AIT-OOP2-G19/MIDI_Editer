@@ -171,7 +171,7 @@ class MainWindow(QMainWindow):
     '''
     def add_note(self):
         """ノートを追加するボタンの処理"""
-        note_width = self.grid_size   # ノートの幅
+        note_width = self.grid_size * 4   # ノートの幅
         note_height = self.grid_size
         note = MidiEdit(100, 100, note_width, note_height, self.grid_size)
         self.roll_scene.addItem(note)
