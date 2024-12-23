@@ -3,6 +3,7 @@ from PySide6.QtWidgets import (QApplication, QWidget, QPushButton, QFileDialog)
 import dawdreamer as daw
 import numpy as np
 from scipy.io import wavfile
+import os
 
 
 class Vst():
@@ -10,29 +11,24 @@ class Vst():
         self.engine = daw.RenderEngine(sample_rate, buffer_size)
         self.vst_path = (str)
         self.plugin = (daw.PluginProcessor)
-        self.isProcessorExists = False # 
+        self.isProcessorExists = False
+        self.plugin_name = (str)
 
     def load_vst(self):
         file,check = QFileDialog.getOpenFileName(None, "ファイルを選択してください。","/Library/Audio/Plug-Ins","All Files (*);;vst Files (*.vst);;vst3 Files (*.vst3)")
 
         if check:
             self.vst_path = file
+            self.plugin_name = os.path.splitext(os.path.basename(self.vst_path))[0] # パスからプラグイン名取得
+            self.plugin = self.engine.make_plugin_processor(self.plugin_name, self.vst_path)
 
-        print(f'vst path: {self.vst_path}')
+            assert self.plugin.get_name() == self.plugin_name # プラグインが反映されなかった時にエラー投げる
 
-        self.plugin = self.engine.make_plugin_processor('plugin', self.vst_path)
-        assert self.plugin.get_name() == 'plugin' # プラグインが反映されなかった時にエラー投げる
-
-        self.isProcessorExists = True
-        self.vst_editer()
-
-
-
-        
+            self.isProcessorExists = True
+            self.vst_editer()
 
     def vst_editer(self):
         if self.isProcessorExists == True:
-            # print('open vst editer')
             self.plugin.open_editor()
         else:
             self.load_vst()
