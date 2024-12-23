@@ -1,13 +1,11 @@
 from PySide6.QtWidgets import (QApplication, QWidget, QPushButton, QFileDialog, QLabel)
-
 import dawdreamer as daw
-import numpy as np
 from scipy.io import wavfile
 import os
 
-
 class Vst():
     def __init__(self, sample_rate=44100, buffer_size=128):
+        self.sample_rate = sample_rate
         self.vst_path = (str)
         self.plugin_name = 'None'
         self.engine = daw.RenderEngine(sample_rate, buffer_size)
@@ -41,7 +39,26 @@ class Vst():
         else:
             self.load_vst()
 
-    
+    '''
+    渡したmidiファイルを読み込んだプラグインで音声出力
+    プラグインが読み込まれてなかったらload_vst()を先に呼ぶ
+    '''
+    def render_audio(self, midi_path):
+        if self.isProcessorExists == True:
+            self.plugin.load_midi(midi_path, clear_previous=True, beats=False, all_events=True)
+
+            graph = [
+            (self.plugin, []),
+            ]
+
+            self.engine.load_graph(graph)
+            self.engine.render(10)
+            output = self.engine.get_audio()
+
+            wavfile.write('./output.wav', self.sample_rate, output.transpose())
+        else:
+            self.load_vst()
+            self.render_audio(midi_path)
 
 '''
 テスト用ウィンドウクラス
@@ -68,7 +85,7 @@ class TestWindow(QWidget):
         self.render_btn = QPushButton(self)
         self.render_btn.move(10, 70)
         self.render_btn.setText('render')
-        # self.render_btn.pressed.connect()
+        self.render_btn.pressed.connect(lambda: self.vst.render_audio('/Users/k23103/Downloads/test.mid'))
 
         self.plugin_name_label = QLabel(self)
         self.plugin_name_label.move(10, 110)
