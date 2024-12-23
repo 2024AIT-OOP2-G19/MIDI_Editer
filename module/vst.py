@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import (QApplication, QWidget, QPushButton, QFileDialog)
+from PySide6.QtWidgets import (QApplication, QWidget, QPushButton, QFileDialog, QLabel)
 
 import dawdreamer as daw
 import numpy as np
@@ -8,12 +8,16 @@ import os
 
 class Vst():
     def __init__(self, sample_rate=44100, buffer_size=128):
-        self.engine = daw.RenderEngine(sample_rate, buffer_size)
         self.vst_path = (str)
+        self.plugin_name = 'None'
+        self.engine = daw.RenderEngine(sample_rate, buffer_size)
         self.plugin = (daw.PluginProcessor)
         self.isProcessorExists = False
-        self.plugin_name = (str)
 
+    '''
+    ファインダーでvstファイルを選択
+    読み込めたらエディターを開く
+    '''
     def load_vst(self):
         file,check = QFileDialog.getOpenFileName(None, "ファイルを選択してください。","/Library/Audio/Plug-Ins","All Files (*);;vst Files (*.vst);;vst3 Files (*.vst3)")
 
@@ -27,6 +31,10 @@ class Vst():
             self.isProcessorExists = True
             self.vst_editer()
 
+    '''
+    エディターを開く
+    プラグインが読み込まれてなかったらload_vst()
+    '''
     def vst_editer(self):
         if self.isProcessorExists == True:
             self.plugin.open_editor()
@@ -42,25 +50,33 @@ class TestWindow(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        vst = Vst()
+        self.vst = Vst()
 
         self.setWindowTitle('vstTest')
-        self.resize(200, 110)
+        self.resize(300, 300)
 
-        load_vst_btn = QPushButton(self)
-        load_vst_btn.move(20, 10)
-        load_vst_btn.setText('load vst')
-        load_vst_btn.pressed.connect(lambda: vst.load_vst())
+        self.load_vst_btn = QPushButton(self)
+        self.load_vst_btn.move(10, 10)
+        self.load_vst_btn.setText('load vst')
+        self.load_vst_btn.pressed.connect(lambda: self.load_vst_btn_pressed())
 
-        vst_editer_btn = QPushButton(self)
-        vst_editer_btn.move(20, 40)
-        vst_editer_btn.setText('vst editer')
-        vst_editer_btn.pressed.connect(lambda: vst.vst_editer())
+        self.vst_editer_btn = QPushButton(self)
+        self.vst_editer_btn.move(10, 40)
+        self.vst_editer_btn.setText('vst editer')
+        self.vst_editer_btn.pressed.connect(lambda: self.vst.vst_editer())
 
-        render_btn = QPushButton(self)
-        render_btn.move(20, 70)
-        render_btn.setText('render')
-        # render_btn.pressed.connect()
+        self.render_btn = QPushButton(self)
+        self.render_btn.move(10, 70)
+        self.render_btn.setText('render')
+        # self.render_btn.pressed.connect()
+
+        self.plugin_name_label = QLabel(self)
+        self.plugin_name_label.move(10, 110)
+        self.plugin_name_label.setText(f'instrument: {self.vst.plugin_name}')
+
+    def load_vst_btn_pressed(self):
+        self.vst.load_vst()
+        self.plugin_name_label.setText(f'instrument: {self.vst.plugin_name}')
 
 if __name__ == "__main__":
     app = QApplication()
