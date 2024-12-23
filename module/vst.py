@@ -7,33 +7,40 @@ from scipy.io import wavfile
 
 class Vst():
     def __init__(self, sample_rate=44100, buffer_size=128):
-
-        self.vst_path = '/Library/Audio/Plug-Ins/VST3/Serum.vst3'
         self.engine = daw.RenderEngine(sample_rate, buffer_size)
-        self.plugin = self.engine.make_plugin_processor('plugin', self.vst_path)
+        self.vst_path = (str)
+        self.plugin = (daw.PluginProcessor)
+        self.isProcessorExists = False # 
 
-    def loadVst(self):
+    def load_vst(self):
         file,check = QFileDialog.getOpenFileName(None, "ファイルを選択してください。","/Library/Audio/Plug-Ins","All Files (*);;vst Files (*.vst);;vst3 Files (*.vst3)")
 
         if check:
-            print(f'check: {check}')
             self.vst_path = file
 
         print(f'vst path: {self.vst_path}')
 
         self.plugin = self.engine.make_plugin_processor('plugin', self.vst_path)
+        assert self.plugin.get_name() == 'plugin' # プラグインが反映されなかった時にエラー投げる
+
+        self.isProcessorExists = True
+        self.vst_editer()
+
 
 
         
 
-    def vstEditer(self):
-        print('open vst editer')
-        self.plugin.open_editor()
+    def vst_editer(self):
+        if self.isProcessorExists == True:
+            # print('open vst editer')
+            self.plugin.open_editor()
+        else:
+            self.load_vst()
 
     
 
 '''
-テスト用ウィンドウ
+テスト用ウィンドウクラス
 '''
 class TestWindow(QWidget):
     def __init__(self, parent=None):
@@ -47,12 +54,12 @@ class TestWindow(QWidget):
         load_vst_btn = QPushButton(self)
         load_vst_btn.move(20, 10)
         load_vst_btn.setText('load vst')
-        load_vst_btn.pressed.connect(lambda: vst.loadVst())
+        load_vst_btn.pressed.connect(lambda: vst.load_vst())
 
         vst_editer_btn = QPushButton(self)
         vst_editer_btn.move(20, 40)
         vst_editer_btn.setText('vst editer')
-        vst_editer_btn.pressed.connect(lambda: vst.vstEditer())
+        vst_editer_btn.pressed.connect(lambda: vst.vst_editer())
 
         render_btn = QPushButton(self)
         render_btn.move(20, 70)
