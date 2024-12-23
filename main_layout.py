@@ -1,13 +1,76 @@
 import PySide6
-from PySide6.QtWidgets import (QApplication, QWidget)
+from PySide6.QtWidgets import (QApplication, QWidget, QPushButton)
+from PySide6.QtGui import QIcon
 import os
 import sys
 import module 
 
-
 class MainWindow(QWidget):              # ウィンドウ系クラスを継承すること
     def __init__(self, parent=None):    # parentは他にウィンドウを表示させる場合に指定する
         super().__init__(parent)        # 継承元クラス（ここではQWidget）を初期化
+
+        self.button1 = QPushButton("MIDI 保存", self)
+        self.button1.setGeometry(50, 50, 100, 50)  
+
+        self.button2 = QPushButton("音声書き出し", self)
+        self.button2.setGeometry(150,50, 100, 50) 
+
+        self.button3 = QPushButton("VST 読み込み", self)
+        self.button3.setGeometry(50, 150, 100, 50) 
+
+        self.button4 = QPushButton("VST 設定", self)
+        self.button4.setGeometry(150, 150, 100, 50)
+
+        self.button5 = QPushButton("", self)
+        self.button5.setGeometry(130, 250, 30, 30)
+
+        self.button6 = QPushButton("", self)
+        self.button6.setGeometry(165, 250, 30, 30)
+
+        self.button7 = QPushButton("", self)
+        self.button7.setGeometry(95, 250, 30, 30) 
+
+        icon_path = "2595817f638a5e212d90db273ebeea92_t.jpeg"
+        self.button5.setIcon(QIcon(icon_path))
+        self.button5.setIconSize(self.button5.size())
+
+        icon_path = "a8696ac84abec4da9cf5950d7f367cb6_t.jpeg"
+        self.button6.setIcon(QIcon(icon_path))
+        self.button6.setIconSize(self.button6.size())
+
+        icon_path = "c5a4082e03eabfe2f9cc35923b0bdffe_t.jpeg"
+        self.button7.setIcon(QIcon(icon_path))
+        self.button7.setIconSize(self.button7.size())
+
+        # ボタンのクリックイベントにスロットを接続
+        self.button1.clicked.connect(self.on_button1_click)
+        self.button2.clicked.connect(self.on_button2_click)
+        self.button3.clicked.connect(self.on_button3_click)
+        self.button4.clicked.connect(self.on_button4_click)
+        self.button5.clicked.connect(self.on_button5_click)
+        self.button6.clicked.connect(self.on_button6_click)
+        self.button7.clicked.connect(self.on_button7_click)
+
+    def on_button1_click(self):
+        print("保存！")
+
+    def on_button2_click(self):
+        print("書き出せぇぇぇぇぇ")
+
+    def on_button3_click(self):
+        print("読み込めぇぇぇぇぇ")
+
+    def on_button4_click(self):
+        print("設定？")
+
+    def on_button5_click(self):
+        print("再生！！！")
+
+    def on_button6_click(self):
+        print("停止！！！")
+
+    def on_button7_click(self):
+        print("戻れ！！！")
 
 if __name__ == "__main__":
     # 環境変数にPySide6を登録
