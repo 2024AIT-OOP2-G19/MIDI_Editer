@@ -1,4 +1,5 @@
-from module.midi_edit import MidiEdit
+from module.note import Note
+from module.note_manager import NoteManager
 from PySide6.QtWidgets import (
     QApplication, QMainWindow, QGraphicsView, QGraphicsScene,
     QVBoxLayout, QHBoxLayout, QWidget, QPushButton, QSplitter, QToolBar
