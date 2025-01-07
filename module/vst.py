@@ -85,7 +85,7 @@ class TestWindow(QWidget):
         self.render_btn = QPushButton(self)
         self.render_btn.move(10, 70)
         self.render_btn.setText('render')
-        self.render_btn.pressed.connect(lambda: self.vst.render_audio('/Users/k23103/Downloads/test.mid', 8))
+        self.render_btn.pressed.connect(lambda: self.vst.render_audio('./test.mid', 8))
 
         self.plugin_name_label = QLabel(self)
         self.plugin_name_label.move(10, 110)
