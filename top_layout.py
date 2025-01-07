@@ -1,5 +1,5 @@
 import PySide6
-from PySide6.QtWidgets import QApplication, QWidget,  QPushButton
+from PySide6.QtWidgets import QApplication, QWidget,  QPushButton, QFileDialog, QMessageBox
 import os
 import sys
 import subprocess
@@ -26,7 +26,22 @@ class TopWindow(QWidget):              # ウィンドウ系クラスを継承す
         print("最初から作るボタンがクリックされました")
 
     def on_button2_click(self):
-       subprocess.call(["open",'/Users'])
+        # subprocess.call(["open",'/Users'])
+        #midiファイルの読み込み
+        options = QFileDialog.Options()
+        
+        # ファイル選択ダイアログを開き、ユーザーが選択したファイルパスを取得
+        file_path, _ = QFileDialog.getOpenFileName(
+            self, "MIDIファイルを選択", "", "MIDI Files (*.mid);;All Files (*)", options=options
+        )
+        if file_path:
+            # ユーザーがファイルを選択したときの通知
+            QMessageBox.information(self, "MIDIファイル読み込み", f"選択されたファイル: {file_path}")
+            print(f"MIDIファイルが読み込まれました: {file_path}") 
+        else:
+            # ファイル選択のキャンセル
+            QMessageBox.warning(self, "キャンセル", "MIDIファイルの選択がキャンセルされました。")
+
 
 
 
