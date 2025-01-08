@@ -30,15 +30,15 @@ class MainWindow(QWidget):              # ウィンドウ系クラスを継承�
         self.button7 = QPushButton("", self)
         self.button7.setGeometry(95, 250, 30, 30) 
 
-        icon_path = "2595817f638a5e212d90db273ebeea92_t.jpeg"
+        icon_path = "再生.png"
         self.button5.setIcon(QIcon(icon_path))
         self.button5.setIconSize(self.button5.size())
 
-        icon_path = "a8696ac84abec4da9cf5950d7f367cb6_t.jpeg"
+        icon_path = "一時停止.png"
         self.button6.setIcon(QIcon(icon_path))
         self.button6.setIconSize(self.button6.size())
 
-        icon_path = "c5a4082e03eabfe2f9cc35923b0bdffe_t.jpeg"
+        icon_path = "最初.png"
         self.button7.setIcon(QIcon(icon_path))
         self.button7.setIconSize(self.button7.size())
 
@@ -55,13 +55,13 @@ class MainWindow(QWidget):              # ウィンドウ系クラスを継承�
         print("保存！")
 
     def on_button2_click(self):
-        print("書き出せぇぇぇぇぇ")
+        render_audio(midi_path, duration)
 
     def on_button3_click(self):
-        print("読み込めぇぇぇぇぇ")
+        load_vst()
 
     def on_button4_click(self):
-        print("設定？")
+        vst_editer()
 
     def on_button5_click(self):
         print("再生！！！")
