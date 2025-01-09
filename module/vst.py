@@ -1,7 +1,9 @@
 from PySide6.QtWidgets import (QApplication, QWidget, QPushButton, QFileDialog, QLabel)
 import dawdreamer as daw
+import sounddevice as sd
 from scipy.io import wavfile
 import os
+import time
 
 class Vst():
     def __init__(self, sample_rate=44100, buffer_size=128):
@@ -55,10 +57,32 @@ class Vst():
             self.engine.render(duration)
             output = self.engine.get_audio()
 
+            sd.play(output.T, samplerate=self.sample_rate)
             wavfile.write('./output.wav', self.sample_rate, output.transpose())
+            
+
         else:
             self.load_vst()
             self.render_audio(midi_path, duration)
+
+    def play_note(self, pitch, duration, velocity):
+        if self.isProcessorExists == True:
+            self.plugin.clear_midi()
+            self.plugin.add_midi_note(note= pitch, velocity= velocity)
+
+            graph = [
+            (self.plugin, []),
+            ]
+
+            self.engine.load_graph(graph)
+
+            self.engine.render(duration)
+            output = self.engine.get_audio()
+
+            sd.play(output, samplerate=self.sample_rate)
+        else:
+            print("!!!processor isnt exists")
+
 
 '''
 テスト用ウィンドウクラス
@@ -68,6 +92,12 @@ class TestWindow(QWidget):
         super().__init__(parent)
 
         self.vst = Vst()
+
+        print(sd.query_devices())
+
+        # デフォルトデバイスの確認
+        print("Default Input Device:", sd.default.device[0])
+        print("Default Output Device:", sd.default.device[1])
 
         self.setWindowTitle('vstTest')
         self.resize(300, 300)
@@ -90,6 +120,11 @@ class TestWindow(QWidget):
         self.plugin_name_label = QLabel(self)
         self.plugin_name_label.move(10, 110)
         self.plugin_name_label.setText(f'instrument: {self.vst.plugin_name}')
+
+        self.render_btn = QPushButton(self)
+        self.render_btn.move(70, 70)
+        self.render_btn.setText('play note')
+        self.render_btn.pressed.connect(lambda: self.vst.play_note(60, 1, 100))
 
     def load_vst_btn_pressed(self):
         self.vst.load_vst()
