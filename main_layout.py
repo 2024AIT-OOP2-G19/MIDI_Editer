@@ -31,9 +31,6 @@ class MainWindow(QMainWindow):
             - VST読み込みボタンの作成
             - VST設定ボタンの作成
         '''
-        self.button1 = QPushButton("MIDI 保存", self)
-        self.button1.setGeometry(50, 50, 100, 50)  
-
         self.button2 = QPushButton("音声書き出し", self)
         self.button2.setGeometry(150,50, 100, 50) 
 
@@ -75,13 +72,45 @@ class MainWindow(QMainWindow):
         
         button_widget = QWidget()
         button_layout = QVBoxLayout(button_widget)
-        self.play_button = QPushButton("再生")
-        self.stop_button = QPushButton("停止")
-        self.record_button = QPushButton("録音")
+        self.play_button = QPushButton("", self)
+        self.set_button_images(self.play_button, play_button_img, play_pushing_img)
+        self.stop_button = QPushButton("", self)
+        self.set_button_images(self.stop_button, stop_button_img, stop_pushing_img)
+        self.back_button = QPushButton("", self)
+        self.set_button_images(self.back_button, back_button_img, back_pushing_img)
+        self.midi_save = QPushButton("MIDI 保存", self)
+        self.midi_save.setStyleSheet(button_style1)
+        self.sound_write = QPushButton("音声書き出し", self)
+        self.sound_write.setStyleSheet(button_style2)
+        self.vst_read = QPushButton("VST 読み込み", self)
+        self.vst_read.setStyleSheet(button_style3)
+        self.vst_option = QPushButton("VST 設定", self)
+        self.vst_option.setStyleSheet(button_style4)
         button_layout.addWidget(self.play_button)
         button_layout.addWidget(self.stop_button)
-        button_layout.addWidget(self.record_button)
+        button_layout.addWidget(self.back_button)
+        button_layout.addWidget(self.midi_save)
+        button_layout.addWidget(self.sound_write)
+        button_layout.addWidget(self.vst_read)
+        button_layout.addWidget(self.vst_option)
+        
+         # ボタンの外枠と焦点インジケータを完全に消す
+        self.play_button.setStyleSheet("border: none; outline: none;")
+        self.stop_button.setStyleSheet("border: none; outline: none;")
+        self.back_button.setStyleSheet("border: none; outline: none;")
+
+        # ボタンのクリックイベントにスロットを接続
+        self.midi_save.clicked.connect(self.on_button1_click)
+        self.sound_write.clicked.connect(self.on_button2_click)
+        self.vst_read.clicked.connect(self.on_button3_click)
+        self.vst_option.clicked.connect(self.on_button4_click)
+        self.play_button.clicked.connect(self.on_button5_click)
+        self.stop_button.clicked.connect(self.on_button6_click)
+        self.back_button.clicked.connect(self.on_button7_click)
+
         button_layout.addStretch()  # ボタン下にスペースを追加
+
+
 
         # 右側の部分をさらに分割
         right_splitter = QSplitter(Qt.Horizontal)
@@ -157,7 +186,23 @@ class MainWindow(QMainWindow):
         self.init_piano_keys()
         self.init_piano_roll()
         self.note_manager = NoteManager(self.grid_size)
-        
+
+    def set_button_images(self, button, normal_image, pressed_image):
+        """
+        ボタンに通常時と押下時の画像を設定
+        """
+        normal_icon = QIcon(normal_image)
+        pressed_icon = QIcon(pressed_image)
+
+        # 通常時のアイコンを設定
+        button.setIcon(normal_icon)
+        button.setIconSize(button.size())
+
+        # 押下時と通常時のアイコンを切り替えるシグナル
+        button.pressed.connect(lambda: button.setIcon(pressed_icon))
+        button.released.connect(lambda: button.setIcon(normal_icon))
+
+
     def closeEvent(self, event):
         reply = QMessageBox.question(self, "確認", "MIDIファイルを保存しますか？",
                                      QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel, QMessageBox.Cancel)
@@ -262,7 +307,7 @@ class MainWindow(QMainWindow):
             if self.roll_view.underMouse():
                 # シーン座標を取得
                 position = self.roll_view.mapToScene(event.position().toPoint())
-                offset_x = 198 # 鍵盤部分
+                offset_x = 238 # 鍵盤部分
                 offset_y = -60 # 小節部分
                 x = position.x() - offset_x
                 y = position.y() - offset_y
