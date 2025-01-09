@@ -11,10 +11,20 @@ class Note(QGraphicsRectItem):
 
         self.grid_size = grid_size
         self.resizing = False # リサイズ中かの判定、移動や選択とと混同しないように
-        self.resize_margin = 5 # リサイズ判定範囲設定 
         self.start_resize_x = 0  # リサイズ開始位置を記録する変数
+        self.start_width = 0  # 追加: リサイズ開始時の幅を記録
         self.setData(0, None)  # NoteManagerのIDを格納するためのカスタムデータ
 
+    def is_on_resize_area(self, pos):
+        """リサイズ判定範囲をノートの右端から0.5グリッドに設定"""
+        # ノートの右端のシーン座標
+        right_edge = self.mapToScene(self.rect().right(), 0).x()
+        # マウスのシーン座標
+        cursor_x = self.mapToScene(pos).x()
+        # 右端からの距離を計算
+        resize_margin = 0.5 * self.grid_size
+        return 0 <= (right_edge - cursor_x) <= resize_margin
+    
     def hoverMoveEvent(self, event): # eventでマウスカーソルの位置などを取得
         """マウスが右端に近づいたときにカーソルを変更"""
         if self.is_on_resize_area(event.pos()): #event.pos()でホバーイベントの発生した位置を取得
@@ -34,6 +44,7 @@ class Note(QGraphicsRectItem):
             if self.is_on_resize_area(event.pos()):
                 self.resizing = True # リサイズ中
                 self.start_resize_x = event.pos().x()  # リサイズ開始位置を記録
+                self.start_width = self.rect().width()  # 追加: リサイズ開始時の幅を記録
             else:
                 super().mousePressEvent(event)
 
@@ -52,13 +63,15 @@ class Note(QGraphicsRectItem):
         - 現在のノートの幅をグリッドサイズで割って四捨五入し、どのグリットの倍数に近いかを判定。その後グリットサイズをかけてスナップ後の幅を求める。
 
     '''
+    
     def mouseMoveEvent(self, event):
         if self.resizing: # リサイズ中かを判定
             '''リサイズ操作：ノート幅をグリッドにスナップ'''
             new_width = event.pos().x() - self.start_resize_x  # 開始位置からの増分を計算
-            print(new_width)
-            if new_width > self.grid_size: # マウスカーソルのx座標が１グリットよりも大きかった場合ににリサイズを実行
-                snapped_width = max(self.grid_size, round(new_width / self.grid_size) * self.grid_size) 
+            total_width = self.start_width + new_width  # 元の幅に増分を加える
+            print(total_width)
+            if total_width > self.grid_size: # マウスカーソルのx座標が１グリットよりも大きかった場合ににリサイズを実行
+                snapped_width = max(self.grid_size, round(total_width / self.grid_size) * self.grid_size)
                 self.setRect(self.rect().x(), self.rect().y(), snapped_width, self.rect().height())
         else:
             '''移動操作：ノートの位置をグリッドにスナップ'''
@@ -77,10 +90,6 @@ class Note(QGraphicsRectItem):
 
         # 元の処理を呼び出す
         super().mouseReleaseEvent(event)
-
-    def is_on_resize_area(self, pos):
-        """リサイズ判定範囲を0.5グリッドに設定"""
-        return self.rect().width() - pos.x() <= self.resize_margin
 
     def snap_to_grid(self):
         """グリッドに基づいて位置をスナップ"""

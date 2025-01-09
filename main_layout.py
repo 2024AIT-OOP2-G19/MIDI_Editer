@@ -171,7 +171,7 @@ class MainWindow(QMainWindow):
             
     def init_bar_area(self):
         """小節部分を初期化"""
-        roll_width = 8090
+        roll_width = 64000
         bar_width = self.grid_size * 16  # 1小節の幅（16グリット）
         bar_height = 40
 
@@ -236,7 +236,7 @@ class MainWindow(QMainWindow):
 
     def init_piano_roll(self):
         """ピアノロール部分を初期化"""
-        roll_width = 8090
+        roll_width = 64000
         key_height = self.grid_size
         keys = 60  # 鍵盤の数
 
