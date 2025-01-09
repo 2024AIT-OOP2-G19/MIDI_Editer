@@ -65,10 +65,16 @@ class Vst():
             self.load_vst()
             self.render_audio(midi_path, duration)
 
-    def play_note(self, pitch, duration, velocity):
+    '''
+    音を一つ鳴らす
+    note: 音の高さ int
+    dur: 長さ(秒) float
+    velocity: 強さ int
+    '''
+    def play_note(self, note, dur, velocity):
         if self.isProcessorExists == True:
             self.plugin.clear_midi()
-            self.plugin.add_midi_note(note= pitch, velocity= velocity)
+            self.plugin.add_midi_note(note=note, velocity=velocity, start_time=0, duration=dur, beats=False)
 
             graph = [
             (self.plugin, []),
@@ -76,10 +82,10 @@ class Vst():
 
             self.engine.load_graph(graph)
 
-            self.engine.render(duration)
+            self.engine.render(dur)
             output = self.engine.get_audio()
 
-            sd.play(output, samplerate=self.sample_rate)
+            sd.play(output.T, samplerate=self.sample_rate)
         else:
             print("!!!processor isnt exists")
 
