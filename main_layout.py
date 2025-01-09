@@ -1,5 +1,6 @@
+import PySide6
 from PySide6.QtWidgets import (QApplication, QMainWindow, QGraphicsView, QGraphicsScene,
-    QVBoxLayout, QHBoxLayout, QWidget, QPushButton, QSplitter, QToolBar)
+    QVBoxLayout, QHBoxLayout, QWidget, QPushButton, QSplitter, QToolBar, QMessageBox)
 from PySide6.QtGui import QIcon, QBrush, QColor, QPen, QAction
 from PySide6.QtCore import Qt, QPoint
 from module.note import Note
@@ -10,8 +11,7 @@ import os
 import sys
 import module 
 
-
-class MainWindow(QWidget):              # ウィンドウ系クラスを継承すること
+class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("ピアノロール GUI")
@@ -31,7 +31,7 @@ class MainWindow(QWidget):              # ウィンドウ系クラスを継承�
             - VST読み込みボタンの作成
             - VST設定ボタンの作成
         '''
-                self.button1 = QPushButton("MIDI 保存", self)
+        self.button1 = QPushButton("MIDI 保存", self)
         self.button1.setGeometry(50, 50, 100, 50)  
 
         self.button2 = QPushButton("音声書き出し", self)
@@ -72,6 +72,16 @@ class MainWindow(QWidget):              # ウィンドウ系クラスを継承�
         self.button5.clicked.connect(self.on_button5_click)
         self.button6.clicked.connect(self.on_button6_click)
         self.button7.clicked.connect(self.on_button7_click)
+        
+        button_widget = QWidget()
+        button_layout = QVBoxLayout(button_widget)
+        self.play_button = QPushButton("再生")
+        self.stop_button = QPushButton("停止")
+        self.record_button = QPushButton("録音")
+        button_layout.addWidget(self.play_button)
+        button_layout.addWidget(self.stop_button)
+        button_layout.addWidget(self.record_button)
+        button_layout.addStretch()  # ボタン下にスペースを追加
 
         # 右側の部分をさらに分割
         right_splitter = QSplitter(Qt.Horizontal)
@@ -147,7 +157,18 @@ class MainWindow(QWidget):              # ウィンドウ系クラスを継承�
         self.init_piano_keys()
         self.init_piano_roll()
         self.note_manager = NoteManager(self.grid_size)
-
+        
+    def closeEvent(self, event):
+        reply = QMessageBox.question(self, "確認", "MIDIファイルを保存しますか？",
+                                     QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel, QMessageBox.Cancel)
+        if reply == QMessageBox.Yes:
+            save_midi(self.midi_file, self.file_path)
+            event.accept()  # midiファイルを保存してウィンドウを閉じる
+        elif reply == QMessageBox.No:
+            event.accept()  # ウィンドウを閉じる
+        else:
+            event.ignore()  # ウィンドウを閉じない
+            
     def init_bar_area(self):
         """小節部分を初期化"""
         roll_width = 8090
@@ -173,12 +194,34 @@ class MainWindow(QWidget):              # ウィンドウ系クラスを継承�
         pattern = [True, False, True, False, True, True, False, True, False, True, False, True]
         pattern_length = len(pattern)
 
+        # ピアノのオクターブの最初のノートが何番目のCかを計算
+        octave_start = 2  # C2から始める（中央C）
+
+
         for i in range(keys):
+            print(i)
             y = i * key_height  # 鍵盤を下から並べる
             is_white = pattern[i % pattern_length]
+            note_name = "C" if (i % pattern_length == 0) else None  # C の位置を判定
             if is_white:
                 color = QColor("white")
                 self.keys_scene.addRect(0, y, 80, key_height, QPen(Qt.black), QBrush(color))
+
+                if note_name:
+                    # ド（C）のラベルを追加
+                    text_item = self.keys_scene.addText(f"{note_name}{octave_start}")
+                    text_item.setDefaultTextColor(Qt.black)
+
+                    # テキストを反転して正しく表示
+                    text_item.setTransform(
+                        text_item.transform().scale(1, -1), 
+                        combine=True
+                    )
+                    text_item.setPos(45, y + key_height * 0.2 + self.grid_size-3)
+
+                    # 次のCに進むときはオクターブをインクリメント
+                    octave_start += 1
+                
             else:
                 color = QColor("black")
                 self.keys_scene.addRect(
@@ -277,8 +320,7 @@ class MainWindow(QWidget):              # ウィンドウ系クラスを継承�
 
             # デバッグ情報
             print(f"Note Updated: ID={note_id}, left_x={left_x}, right_x={right_x}, y_pos={y_pos}")
-
-
+            
     def on_button1_click(self):
         print("保存！")
 
@@ -300,19 +342,7 @@ class MainWindow(QWidget):              # ウィンドウ系クラスを継承�
     def on_button7_click(self):
         print("戻れ！！！")
 
-    def closeEvent(self, event):
-        reply = QMessageBox.question(self, "確認", "MIDIファイルを保存しますか？",
-                                     QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel, QMessageBox.Cancel)
-        if reply == QMessageBox.Yes:
-            save_midi(self.midi_file, self.file_path)
-            event.accept()  # midiファイルを保存してウィンドウを閉じる
-        elif reply == QMessageBox.No:
-            event.accept()  # ウィンドウを閉じる
-        else:
-            event.ignore()  # ウィンドウを閉じない
-            
 if __name__ == "__main__":
-    app = QApplication([])
     # 環境変数にPySide6を登録
     dirname = os.path.dirname(PySide6.__file__)
     plugin_path = os.path.join(dirname, 'plugins', 'platforms')
