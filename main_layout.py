@@ -137,12 +137,34 @@ class MainWindow(QMainWindow):
         pattern = [True, False, True, False, True, True, False, True, False, True, False, True]
         pattern_length = len(pattern)
 
+        # ピアノのオクターブの最初のノートが何番目のCかを計算
+        octave_start = 2  # C2から始める（中央C）
+
+
         for i in range(keys):
+            print(i)
             y = i * key_height  # 鍵盤を下から並べる
             is_white = pattern[i % pattern_length]
+            note_name = "C" if (i % pattern_length == 0) else None  # C の位置を判定
             if is_white:
                 color = QColor("white")
                 self.keys_scene.addRect(0, y, 80, key_height, QPen(Qt.black), QBrush(color))
+
+                if note_name:
+                    # ド（C）のラベルを追加
+                    text_item = self.keys_scene.addText(f"{note_name}{octave_start}")
+                    text_item.setDefaultTextColor(Qt.black)
+
+                    # テキストを反転して正しく表示
+                    text_item.setTransform(
+                        text_item.transform().scale(1, -1), 
+                        combine=True
+                    )
+                    text_item.setPos(45, y + key_height * 0.2 + self.grid_size-3)
+
+                    # 次のCに進むときはオクターブをインクリメント
+                    octave_start += 1
+                
             else:
                 color = QColor("black")
                 self.keys_scene.addRect(
