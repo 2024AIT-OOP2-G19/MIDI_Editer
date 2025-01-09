@@ -1,6 +1,7 @@
 import PySide6
 from PySide6.QtWidgets import (QApplication, QWidget, QPushButton)
 from PySide6.QtGui import QIcon
+from module.vst import Vst
 import os
 import sys
 import module 
@@ -55,13 +56,13 @@ class MainWindow(QWidget):              # ウィンドウ系クラスを継承�
         print("保存！")
 
     def on_button2_click(self):
-        render_audio(midi_path, duration)
+        Vst.render_audio(midi_path, duration)
 
     def on_button3_click(self):
-        load_vst()
+        Vst.load_vst()
 
     def on_button4_click(self):
-        vst_editer()
+        Vst.vst_editer()
 
     def on_button5_click(self):
         print("再生！！！")
