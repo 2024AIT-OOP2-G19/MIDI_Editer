@@ -1,12 +1,33 @@
 import PySide6
-from PySide6.QtWidgets import (QApplication, QWidget)
+from PySide6.QtWidgets import QApplication, QWidget,  QPushButton
 import os
 import sys
+import subprocess
 from main_layout import MainWindow
 
 class TopWindow(QWidget):              # ウィンドウ系クラスを継承すること
     def __init__(self, parent=None):    # parentは他にウィンドウを表示させる場合に指定する
         super().__init__(parent)        # 継承元クラス（ここではQWidget）を初期化
+        self.setWindowTitle("作曲")
+        self.resize(400,300)
+
+        #1つ目のボタン
+        self.button1 = QPushButton("最初から作る", self)
+        self.button1.clicked.connect(self.on_button1_click)
+        self.button1.setGeometry(140,140,130,50)
+
+
+        #２つ目のボタン
+        self.button2 = QPushButton("続きから作る", self)
+        self.button2.clicked.connect(self.on_button2_click)
+        self.button2.setGeometry(140,80,130,50)
+
+    def on_button1_click(self):
+        print("最初から作るボタンがクリックされました")
+
+    def on_button2_click(self):
+       subprocess.call(["open",'/Users'])
+
 
 
 if __name__ == "__main__":
@@ -19,3 +40,4 @@ if __name__ == "__main__":
     window = TopWindow()           # ユーザがコーディングしたクラス
     window.show()                   # PySide6のウィンドウを表示
     sys.exit(app.exec())            # PySide6の終了
+##ボタンを２つ作る
