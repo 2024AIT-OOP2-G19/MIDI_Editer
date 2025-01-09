@@ -31,45 +31,78 @@ class MainWindow(QMainWindow):
             - VST読み込みボタンの作成
             - VST設定ボタンの作成
         '''
-        self.button2 = QPushButton("音声書き出し", self)
-        self.button2.setGeometry(150,50, 100, 50) 
-
-        self.button3 = QPushButton("VST 読み込み", self)
-        self.button3.setGeometry(50, 150, 100, 50) 
-
-        self.button4 = QPushButton("VST 設定", self)
-        self.button4.setGeometry(150, 150, 100, 50)
-
-        self.button5 = QPushButton("", self)
-        self.button5.setGeometry(130, 250, 30, 30)
-
-        self.button6 = QPushButton("", self)
-        self.button6.setGeometry(165, 250, 30, 30)
-
-        self.button7 = QPushButton("", self)
-        self.button7.setGeometry(95, 250, 30, 30) 
-
-        icon_path = "再生.png"
-        self.button5.setIcon(QIcon(icon_path))
-        self.button5.setIconSize(self.button5.size())
-
-        icon_path = "一時停止.png"
-        self.button6.setIcon(QIcon(icon_path))
-        self.button6.setIconSize(self.button6.size())
-
-        icon_path = "最初.png"
-        self.button7.setIcon(QIcon(icon_path))
-        self.button7.setIconSize(self.button7.size())
-
-        # ボタンのクリックイベントにスロットを接続
-        self.button1.clicked.connect(self.on_button1_click)
-        self.button2.clicked.connect(self.on_button2_click)
-        self.button3.clicked.connect(self.on_button3_click)
-        self.button4.clicked.connect(self.on_button4_click)
-        self.button5.clicked.connect(self.on_button5_click)
-        self.button6.clicked.connect(self.on_button6_click)
-        self.button7.clicked.connect(self.on_button7_click)
         
+        button_style1 = """
+    QPushButton {
+        background-color: #2196f3;  /* 背景色 */
+        color: #ffff00;               /* テキストの色 */
+        border: 2px solid #388e3c;  /* ボーダーの色 */
+        border-radius: 10px;        /* ボタンの角を丸くする */
+        padding: 5px;               /* テキストの余白 */
+    }
+    QPushButton:hover {
+        background-color: #1085dd;  /* ホバー時の背景色 */
+    }
+    QPushButton:pressed {
+        background-color: #0060cc;  /* 押下時の背景色 */
+    }
+"""
+
+        button_style2 = """
+    QPushButton {
+        background-color: #fbc02d;  /* 背景色 */
+        color: #1033ff;               /* テキストの色 */
+        border: 2px solid #ff9800;  /* ボーダーの色 */
+        border-radius: 10px;        /* ボタンの角を丸くする */
+        padding: 5px;               /* テキストの余白 */
+    }
+    QPushButton:hover {
+        background-color: #dda01a;  /* ホバー時の背景色 */
+    }
+    QPushButton:pressed {
+        background-color: #bb7000;  /* 押下時の背景色 */
+    }
+"""
+
+        button_style3 = """
+    QPushButton {
+        background-color: #0097a7;  /* 背景色 */
+        color: #222222;               /* テキストの色 */
+        border: 2px solid #ff9800;  /* ボーダーの色 */
+        border-radius: 10px;        /* ボタンの角を丸くする */
+        padding: 5px;               /* テキストの余白 */
+    }
+    QPushButton:hover {
+        background-color: #008c90;  /* ホバー時の背景色 */
+    }
+    QPushButton:pressed {
+        background-color: #007787;  /* 押下時の背景色 */
+    }
+"""
+
+        button_style4 = """
+    QPushButton {
+        background-color: #9e9e9e;  /* 背景色 */
+        color: #222222;               /* テキストの色 */
+        border: 2px solid #bbbbbb;  /* ボーダーの色 */
+        border-radius: 10px;        /* ボタンの角を丸くする */
+        padding: 5px;               /* テキストの余白 */
+    }
+    QPushButton:hover {
+        background-color: #a2a2a2;  /* ホバー時の背景色 */
+    }
+    QPushButton:pressed {
+        background-color: #b7b7b7;  /* 押下時の背景色 */
+    }
+"""
+        app.setStyle("Fusion")
+
+        play_button_img = os.path.join('images', '再生.png')
+        play_pushing_img = os.path.join('images', '再生押してる.png')
+        stop_button_img = os.path.join('images', '一時停止.png')
+        stop_pushing_img = os.path.join('images', '一時停止押してる.png')
+        back_button_img = os.path.join('images', '最初.png')
+        back_pushing_img = os.path.join('images', '最初押してる.png')
         button_widget = QWidget()
         button_layout = QVBoxLayout(button_widget)
         self.play_button = QPushButton("", self)
