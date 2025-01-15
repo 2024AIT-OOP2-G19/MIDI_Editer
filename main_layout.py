@@ -5,6 +5,7 @@ from PySide6.QtGui import QIcon, QBrush, QColor, QPen, QAction
 from PySide6.QtCore import Qt, QPoint
 from module.note import Note
 from module.note_manager import NoteManager
+from module.midi_edit import MidiEdit
 from module.vst import Vst
 from module.midi_rw import save_midi
 import os
@@ -121,6 +122,7 @@ class MainWindow(QMainWindow):
         self.vst_option.setStyleSheet(button_style4)
         button_layout.addWidget(self.play_button)
         button_layout.addWidget(self.stop_button)
+
         button_layout.addWidget(self.back_button)
         button_layout.addWidget(self.midi_save)
         button_layout.addWidget(self.sound_write)
@@ -400,7 +402,11 @@ class MainWindow(QMainWindow):
             print(f"Note Updated: ID={note_id}, left_x={left_x}, right_x={right_x}, y_pos={y_pos}")
             
     def on_button1_click(self):
+        bpm = 120
         print("保存！")
+        self.midi_edit = MidiEdit(self.note_manager.to_dict())
+        self.midi = self.midi_edit.note2midi(bpm)
+        # self.note_manager = '''MidiEdit.「midiデータ変換関数」'''
 
     def on_button2_click(self):
         Vst.render_audio(midi_path, duration)

@@ -1,6 +1,6 @@
-from mido import MidiFile, MidiTrack, Message
+from mido import MidiFile, MidiTrack
 
-def create_midi(file_name: str):
+def create_newMidi():
     midi = MidiFile()
     track = MidiTrack()
     midi.tracks.append(track)
