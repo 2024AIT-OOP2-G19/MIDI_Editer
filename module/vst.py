@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import (QApplication, QWidget, QPushButton, QFileDialog, QLabel)
 import dawdreamer as daw
-import sounddevice as sd
+# import sounddevice as sd
 from scipy.io import wavfile
 import os
 
