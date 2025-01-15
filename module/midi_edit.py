@@ -1,9 +1,9 @@
 import mido
 from mido import Message, MidiFile, MidiTrack, MetaMessage
-from module.note_manager import NoteManager
+from midi_rw import create_newMidi
 
 SEMIQUAVER_VALUE = 120  # 音の長さをmidi用に変換するための定数
-MIDI_PITCH_ADJUST= 36  # 音の高さをmidi用に調整するための定数
+MIDI_PITCH_ADJUST= 48  # 音の高さをmidi用に調整するための定数
 VELOCITY = 100 # 音の強さの定数
 
 class MidiEdit:
@@ -16,9 +16,7 @@ class MidiEdit:
         if mid is None:
             self.mid = MidiFile()
         else:
-            self.mid = MidiFile(mid)
-            track = MidiTrack()
-            self.mid.tracks.append(track)
+            self.mid = create_newMidi()
     
     '''XY座標の値からnoteに変換してmidファイルを生成する関数'''    
     def note2midi(self, bpm):
