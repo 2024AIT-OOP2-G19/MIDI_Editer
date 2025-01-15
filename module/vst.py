@@ -45,7 +45,7 @@ class Vst():
     プラグインが読み込まれてなかったらload_vst()を先に呼ぶ
     '''
     def render_audio(self, midi_path, duration):
-        if self.isProcessorExists == True:
+        if self.isProcessorExists == False:
             self.load_vst()
             self.render_audio(midi_path, duration)
             return
