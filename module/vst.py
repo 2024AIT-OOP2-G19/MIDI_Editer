@@ -52,20 +52,23 @@ class Vst():
             print("!!!file doesnt exists")
             return
         
-        self.plugin.load_midi(midi_path, clear_previous=True, beats=True, all_events=True)
+        wavfile_path = f"{os.path.dirname(midi_path)}/{os.path.splitext(os.path.basename(midi_path))[0]}.wav"
+        file,check = QFileDialog.getSaveFileName(None, "名前をつけて保存", wavfile_path,"wavファイル (*.wav)")
 
-        graph = [
-        (self.plugin, []),
-        ]
+        if check:
+            self.plugin.load_midi(midi_path, clear_previous=True, beats=True, all_events=True)
 
-        self.engine.load_graph(graph)
-        self.engine.render(duration)
-        output = self.engine.get_audio()
+            graph = [
+            (self.plugin, []),
+            ]
 
-        # sd.play(output.T, samplerate=self.sample_rate)
-        wavfile.write('./output.wav', self.sample_rate, output.transpose())
-        
-        self.plugin.clear_midi()
+            self.engine.load_graph(graph)
+            self.engine.render(duration)
+            output = self.engine.get_audio()
+
+            wavfile.write(file, self.sample_rate, output.transpose())
+            
+            self.plugin.clear_midi()
 
     def play_note(self, note, dur=0.5, velocity=100):
         '''音を一つ鳴らす
