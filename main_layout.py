@@ -5,6 +5,7 @@ from PySide6.QtGui import QIcon, QBrush, QColor, QPen, QAction
 from PySide6.QtCore import Qt, QPoint
 from module.note import Note
 from module.note_manager import NoteManager
+from module.midi_edit import MidiEdit
 from module.vst import Vst
 from module.midi_rw import save_midi
 import os
@@ -81,6 +82,7 @@ class MainWindow(QMainWindow):
         button_layout.addWidget(self.play_button)
         button_layout.addWidget(self.stop_button)
         button_layout.addWidget(self.record_button)
+        button_layout.addWidget(self.button1)
         button_layout.addStretch()  # ボタン下にスペースを追加
 
         # 右側の部分をさらに分割
@@ -323,6 +325,9 @@ class MainWindow(QMainWindow):
             
     def on_button1_click(self):
         print("保存！")
+        self.midi_edit = MidiEdit(self.note_manager.to_dict())
+        self.midi = MidiEdit.note2midi()
+        # self.note_manager = '''MidiEdit.「midiデータ変換関数」'''
 
     def on_button2_click(self):
         Vst.render_audio(midi_path, duration)
