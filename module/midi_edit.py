@@ -89,6 +89,11 @@ class MidiEdit:
                 
         return self.note_manager
     
+    '''y座標から音の高さに変換する関数'''
+    def y2pitch(y):
+        pitch = y + MIDI_PITCH_ADJUST
+        return pitch
+    
 if __name__ == "__main__":
     midiEdit = MidiEdit()
     
