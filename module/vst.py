@@ -89,7 +89,7 @@ class Vst():
 
         self.engine.load_graph(graph)
 
-        self.engine.render(dur + 0.5) # 余韻を途切れさせないためにために+0.5
+        self.engine.render(dur + 10) # 余韻を途切れさせないためにために+10
         output = self.engine.get_audio()
 
         sd.play(output.T, samplerate=self.sample_rate)
@@ -133,9 +133,8 @@ class TestWindow(QWidget):
 
         self.vst = Vst()
 
+        # サウンドデバイスの確認
         print(sd.query_devices())
-
-        # デフォルトデバイスの確認
         print("Default Input Device:", sd.default.device[0])
         print("Default Output Device:", sd.default.device[1])
 
