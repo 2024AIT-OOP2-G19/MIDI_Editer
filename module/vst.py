@@ -5,6 +5,8 @@ from scipy.io import wavfile
 import os
 
 class Vst():
+    '''vstプラグインで音を鳴らしたりするクラス'''
+
     def __init__(self, sample_rate=44100, buffer_size=128):
         self.sample_rate = sample_rate
         self.vst_path = (str)
@@ -13,11 +15,10 @@ class Vst():
         self.plugin = (daw.PluginProcessor)
         self.isProcessorExists = False
 
-    '''
-    ファインダーでvstファイルを選択
-    読み込めたらエディターを開く
-    '''
     def load_vst(self):
+        '''ファインダーでvstファイルを選択
+        読み込めたらエディターを開く
+        '''
         file,check = QFileDialog.getOpenFileName(None, "ファイルを選択してください。","/Library/Audio/Plug-Ins","All Files (*);;vst Files (*.vst);;vst3 Files (*.vst3)")
 
         if check:
@@ -30,21 +31,19 @@ class Vst():
             self.isProcessorExists = True
             self.vst_editer()
 
-    '''
-    エディターを開く
-    プラグインが読み込まれてなかったらload_vst()
-    '''
     def vst_editer(self):
+        '''エディターを開く
+        プラグインが読み込まれてなかったらload_vst()
+        '''
         if self.isProcessorExists == True:
             self.plugin.open_editor()
         else:
             self.load_vst()
 
-    '''
-    渡したmidiファイルを読み込んだプラグインで音声出力
-    プラグインが読み込まれてなかったらload_vst()を先に呼ぶ
-    '''
     def render_audio(self, midi_path, duration):
+        '''渡したmidiファイルを読み込んだプラグインで音声出力
+        プラグインが読み込まれてなかったらload_vst()を先に呼ぶ
+        '''
         if self.isProcessorExists == False:
             self.load_vst()
             self.render_audio(midi_path, duration)
@@ -67,15 +66,13 @@ class Vst():
         wavfile.write('./output.wav', self.sample_rate, output.transpose())
         
         self.plugin.clear_midi()
-            
 
-    '''
-    音を一つ鳴らす
-    note: 音の高さ int
-    dur: 長さ(秒) float
-    velocity: 強さ int
-    '''
     def play_note(self, note, dur=0.5, velocity=100):
+        '''音を一つ鳴らす
+        note: 音の高さ int
+        dur: 長さ(秒) float
+        velocity: 強さ int
+        '''
         if self.isProcessorExists == False:
             print("!!!file doesnt exists")
             return
@@ -95,12 +92,11 @@ class Vst():
         sd.play(output.T, samplerate=self.sample_rate)
         self.plugin.clear_midi()
 
-        '''
-    midiファイルを鳴らす
-    midi_path: ファイルパス str
-    dur: 長さ(秒) float
-    '''
     def play_midi_file(self, midi_path, dur):
+        '''midiファイルを鳴らす
+        midi_path: ファイルパス str
+        dur: 長さ(秒) float
+        '''
         if self.isProcessorExists == False:
             print("!!!processor doesnt exists")
             return
@@ -123,11 +119,9 @@ class Vst():
         sd.play(output.T, samplerate=self.sample_rate)
         self.plugin.clear_midi()
 
-
-'''
-テスト用ウィンドウクラス
-'''
 class TestWindow(QWidget):
+    '''テスト用ウィンドウクラス
+    '''
     def __init__(self, parent=None):
         super().__init__(parent)
 
