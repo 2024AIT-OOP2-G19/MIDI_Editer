@@ -1,6 +1,6 @@
 import mido
 from mido import Message, MidiFile, MidiTrack, MetaMessage
-from midi_rw import create_newMidi
+from .midi_rw import create_newMidi
 
 SEMIQUAVER_VALUE = 120  # 音の長さをmidi用に変換するための定数
 MIDI_PITCH_ADJUST= 48  # 音の高さをmidi用に調整するための定数
