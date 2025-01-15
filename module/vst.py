@@ -57,7 +57,7 @@ class Vst():
             self.engine.render(duration)
             output = self.engine.get_audio()
 
-            sd.play(output.T, samplerate=self.sample_rate)
+            # sd.play(output.T, samplerate=self.sample_rate)
             wavfile.write('./output.wav', self.sample_rate, output.transpose())
             
 
