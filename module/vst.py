@@ -50,7 +50,7 @@ class Vst():
             self.render_audio(midi_path, duration)
             return
         if os.path.exists(midi_path) == False:
-            print("!!!file isnt exists")
+            print("!!!file doesnt exists")
             return
         
         self.plugin.load_midi(midi_path, clear_previous=True, beats=True, all_events=True)
@@ -77,7 +77,7 @@ class Vst():
     '''
     def play_note(self, note, dur=0.5, velocity=100):
         if self.isProcessorExists == False:
-            print("!!!file isnt exists")
+            print("!!!file doesnt exists")
             return
         
         self.plugin.clear_midi()
@@ -102,10 +102,10 @@ class Vst():
     '''
     def play_midi_file(self, midi_path, dur):
         if self.isProcessorExists == False:
-            print("!!!processor isnt exists")
+            print("!!!processor doesnt exists")
             return
         if os.path.exists(midi_path) == False:
-            print("!!!file isnt exists")
+            print("!!!file doesnt exists")
             return
         
         self.plugin.clear_midi()
