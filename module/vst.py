@@ -3,7 +3,6 @@ import dawdreamer as daw
 import sounddevice as sd
 from scipy.io import wavfile
 import os
-import time
 
 class Vst():
     def __init__(self, sample_rate=44100, buffer_size=128):
@@ -47,24 +46,28 @@ class Vst():
     '''
     def render_audio(self, midi_path, duration):
         if self.isProcessorExists == True:
-            self.plugin.load_midi(midi_path, clear_previous=True, beats=True, all_events=True)
-
-            graph = [
-            (self.plugin, []),
-            ]
-
-            self.engine.load_graph(graph)
-            self.engine.render(duration)
-            output = self.engine.get_audio()
-
-            # sd.play(output.T, samplerate=self.sample_rate)
-            wavfile.write('./output.wav', self.sample_rate, output.transpose())
-            
-            self.plugin.clear_midi()
-
-        else:
             self.load_vst()
             self.render_audio(midi_path, duration)
+            return
+        if os.path.exists(midi_path) == False:
+            print("!!!file isnt exists")
+            return
+        
+        self.plugin.load_midi(midi_path, clear_previous=True, beats=True, all_events=True)
+
+        graph = [
+        (self.plugin, []),
+        ]
+
+        self.engine.load_graph(graph)
+        self.engine.render(duration)
+        output = self.engine.get_audio()
+
+        # sd.play(output.T, samplerate=self.sample_rate)
+        wavfile.write('./output.wav', self.sample_rate, output.transpose())
+        
+        self.plugin.clear_midi()
+            
 
     '''
     音を一つ鳴らす
@@ -72,24 +75,25 @@ class Vst():
     dur: 長さ(秒) float
     velocity: 強さ int
     '''
-    def play_note(self, note, dur=1, velocity=100):
-        if self.isProcessorExists == True:
-            self.plugin.clear_midi()
-            self.plugin.add_midi_note(note=note, velocity=velocity, start_time=0, duration=dur, beats=False)
+    def play_note(self, note, dur=0.5, velocity=100):
+        if self.isProcessorExists == False:
+            print("!!!file isnt exists")
+            return
+        
+        self.plugin.clear_midi()
+        self.plugin.add_midi_note(note=note, velocity=velocity, start_time=0, duration=dur, beats=False)
 
-            graph = [
-            (self.plugin, []),
-            ]
+        graph = [
+        (self.plugin, []),
+        ]
 
-            self.engine.load_graph(graph)
+        self.engine.load_graph(graph)
 
-            self.engine.render(dur)
-            output = self.engine.get_audio()
+        self.engine.render(dur + 0.5) # 余韻を途切れさせないためにために+0.5
+        output = self.engine.get_audio()
 
-            sd.play(output.T, samplerate=self.sample_rate)
-            self.plugin.clear_midi()
-        else:
-            print("!!!processor isnt exists")
+        sd.play(output.T, samplerate=self.sample_rate)
+        self.plugin.clear_midi()
 
         '''
     midiファイルを鳴らす
@@ -97,23 +101,27 @@ class Vst():
     dur: 長さ(秒) float
     '''
     def play_midi_file(self, midi_path, dur):
-        if self.isProcessorExists == True:
-            self.plugin.clear_midi()
-            self.plugin.load_midi(midi_path, clear_previous=True, beats=False, all_events=True)
-
-            graph = [
-            (self.plugin, []),
-            ]
-
-            self.engine.load_graph(graph)
-
-            self.engine.render(dur)
-            output = self.engine.get_audio()
-
-            sd.play(output.T, samplerate=self.sample_rate)
-            self.plugin.clear_midi()
-        else:
+        if self.isProcessorExists == False:
             print("!!!processor isnt exists")
+            return
+        if os.path.exists(midi_path) == False:
+            print("!!!file isnt exists")
+            return
+        
+        self.plugin.clear_midi()
+        self.plugin.load_midi(midi_path, clear_previous=True, beats=False, all_events=True)
+
+        graph = [
+        (self.plugin, []),
+        ]
+
+        self.engine.load_graph(graph)
+
+        self.engine.render(dur)
+        output = self.engine.get_audio()
+
+        sd.play(output.T, samplerate=self.sample_rate)
+        self.plugin.clear_midi()
 
 
 '''
