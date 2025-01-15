@@ -2,7 +2,7 @@
 
 ## 仕様
 
-* midiファイルの読み込み、編集、保存
+* midiファイルの新規作成、読み込み、編集、保存
 * VSTプラグインでの再生、wavファイル保存
 
 ## 前提条件
@@ -18,7 +18,7 @@
   * scipy 1.14.1
   * sounddevice 0.5.1
 
-VSTプラグインのダウンロード:
+[VSTプラグイン](https://ja.m.wikipedia.org/wiki/Virtual_Studio_Technology)のダウンロード:
 
 * ライブラリの問題で、一部プラグインは正常に動きません。
 * 無料ウェーブテーブルシンセサイザー [VITAL](https://vital.audio/) (v1.5.5 動作確認済み)
