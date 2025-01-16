@@ -427,10 +427,8 @@ class MainWindow(QMainWindow):
         """NoteManagerのデータを元にノートを再生成して表示"""
         data = self.note_manager.to_dict()
         print(data)  # 返り値を確認
-        notes = data.get("notes", {})
-        print(notes)  # ノートデータが正しく取得できているか確認
         # 各ノートを再生成
-        for note_id, note_data in notes.items():
+        for note_id, note_data in data.items():
             print(type(note_data))  # note_data の型を確認
             # ノート情報を取得
             note_id = note_data["id"]
@@ -459,7 +457,7 @@ class MainWindow(QMainWindow):
         save_midi(self, self.midi, self.file_path) # midiファイルを保存
 
     def on_button2_click(self):
-        save_midi(note2midi(self.note_manager.to_dict(), self.bpm), self.file_path)
+        save_midi(self, note2midi(self.note_manager.to_dict(), self.bpm), self.file_path)
         self.vst.render_audio(self.file_path, note2midi(self.note_manager.to_dict(), self.bpm).legth())
 
     def on_button3_click(self):
@@ -469,8 +467,8 @@ class MainWindow(QMainWindow):
         self.vst.vst_editer()
 
     def on_button5_click(self):
-        save_midi(note2midi(self.note_manager.to_dict(), self.bpm), self.file_path)
-        self.vst.play_midi_file(self.file_path, note2midi(self.note_manager.to_dict(), self.bpm).legth())
+        save_midi(self, note2midi(self.note_manager.to_dict(), self.bpm), self.file_path)
+        self.vst.play_midi_file(self.file_path, note2midi(self.note_manager.to_dict(), self.bpm).length())
 
     def on_button6_click(self):
         self.vst.stop_audio()
