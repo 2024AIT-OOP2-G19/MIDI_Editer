@@ -373,6 +373,9 @@ class MainWindow(QMainWindow):
                 self.roll_scene.addItem(note)
                 print(f"Note Item Position: x={note.scenePos().x()}, y={note.scenePos().y()}")
 
+                # 作成したノートの高さの音を鳴らす
+                self.vst.play_note(self.midi_edit.y2pitch(note_y // self.grid_size))
+
     def remove_note_item(self, note_item):
         """指定されたノートアイテムを削除"""
         note_id = note_item.data(0)  # NoteManagerで管理されているノートIDを取得
