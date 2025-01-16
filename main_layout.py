@@ -223,6 +223,9 @@ class MainWindow(QMainWindow):
         self.note_manager = NoteManager(self.grid_size)
         self.load_notes_from_manager()
 
+        self.vst = Vst()
+        self.midi_edit = MidiEdit(self.note_manager.to_dict)
+
     def set_button_images(self, button, normal_image, pressed_image):
         """
         ボタンに通常時と押下時の画像を設定
@@ -370,6 +373,9 @@ class MainWindow(QMainWindow):
                 self.roll_scene.addItem(note)
                 print(f"Note Item Position: x={note.scenePos().x()}, y={note.scenePos().y()}")
 
+                # 作成したノートの高さの音を鳴らす
+                self.vst.play_note(self.midi_edit.y2pitch(note_y // self.grid_size))
+
     def remove_note_item(self, note_item):
         """指定されたノートアイテムを削除"""
         note_id = note_item.data(0)  # NoteManagerで管理されているノートIDを取得
@@ -395,6 +401,8 @@ class MainWindow(QMainWindow):
 
             # NoteManager を更新
             self.note_manager.update_note(note_id, left_x=left_x, right_x=right_x, y_pos=y_pos)
+
+            self.vst.play_note(self.midi_edit.y2pitch(y_pos))
 
             # デバッグ情報
             print(f"Note Updated: ID={note_id}, left_x={left_x}, right_x={right_x}, y_pos={y_pos}")
@@ -437,13 +445,13 @@ class MainWindow(QMainWindow):
         # self.note_manager = '''MidiEdit.「midiデータ変換関数」'''
 
     def on_button2_click(self):
-        Vst.render_audio(midi_path, duration)
+        self.vst.render_audio(midi_path, duration)
 
     def on_button3_click(self):
-        Vst.load_vst()
+        self.vst.load_vst()
 
     def on_button4_click(self):
-        Vst.vst_editer()
+        self.vst.vst_editer()
 
     def on_button5_click(self):
         print("再生！！！")

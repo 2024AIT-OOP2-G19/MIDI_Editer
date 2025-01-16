@@ -70,7 +70,7 @@ class Vst():
             
             self.plugin.clear_midi()
 
-    def play_note(self, note, dur=0.5, velocity=100):
+    def play_note(self, note, dur=0.3, velocity=100):
         '''音を一つ鳴らす
         note: 音の高さ int
         dur: 長さ(秒) float
