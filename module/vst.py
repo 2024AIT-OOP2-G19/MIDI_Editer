@@ -122,6 +122,10 @@ class Vst():
         sd.play(output.T, samplerate=self.sample_rate)
         self.plugin.clear_midi()
 
+    @staticmethod
+    def stop_audio():
+        sd.stop()
+
 class TestWindow(QWidget):
     '''テスト用ウィンドウクラス
     '''

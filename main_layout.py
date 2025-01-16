@@ -473,6 +473,7 @@ class MainWindow(QMainWindow):
         self.vst.play_midi_file(self.file_path, note2midi(self.note_manager.to_dict(), self.bpm).legth())
 
     def on_button6_click(self):
+        self.vst.stop_audio()
         print("停止！！！")
 
     def on_button7_click(self):
