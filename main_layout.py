@@ -20,9 +20,12 @@ class MainWindow(QMainWindow):
         self.setGeometry(100, 100, 1500, 1000)
 
         self.grid_size = 20  # グリッドのサイズ
+        self.bpm = 120
         self.note_manager = NoteManager(self.grid_size)
         if midi_path != None:
             self.note_manager.notes = midi2note(load_midi(midi_path))
+        
+        self.midi_path = midi_path
 
         # メインウィジェットとスプリッター（左右分割）
         main_widget = QWidget()
@@ -450,7 +453,7 @@ class MainWindow(QMainWindow):
     def on_button1_click(self):
         bpm = 120
         print("保存！")
-        self.midi = note2midi(self.note_manager.to_dict(), bpm)
+        self.midi = note2midi(self.note_manager.to_dict(), self.bpm)
         '''
         どこかにmidiファイルを出力する作業が必要
         pathとファイル名を取ってくる必要がある
@@ -459,7 +462,8 @@ class MainWindow(QMainWindow):
         save_midi(self.midi)
 
     def on_button2_click(self):
-        self.vst.render_audio(midi_path, duration)
+        save_midi(note2midi(self.note_manager.to_dict(), self.bpm), self.midi_path)
+        self.vst.render_audio(self.midi_path, note2midi(self.note_manager.to_dict(), self.bpm).legth())
 
     def on_button3_click(self):
         self.vst.load_vst()
@@ -468,7 +472,8 @@ class MainWindow(QMainWindow):
         self.vst.vst_editer()
 
     def on_button5_click(self):
-        print("再生！！！")
+        save_midi(note2midi(self.note_manager.to_dict(), self.bpm), self.midi_path)
+        self.vst.play_midi_file(self.midi_path, note2midi(self.note_manager.to_dict(), self.bpm).legth())
 
     def on_button6_click(self):
         print("停止！！！")
