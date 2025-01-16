@@ -82,8 +82,9 @@ class TopWindow(QWidget):              # ウィンドウ系クラスを継承す
         self.main_page.show()
         self.close()
 
-    def on_button2_click(self, file_path):
-        file_path, check = QFileDialog.getOpenFileName(None, "ファイルを選択してください。", "", "All Files (*);;mid Files (*.mid)")
+    def on_button2_click(self,file_path):
+        file_path,check = QFileDialog.getOpenFileName(None, "ファイルを選択してください。","","mid Files (*.mid)")
+
         if check:
             self.main_page = MainWindow(file_path)
             self.main_page.show()
