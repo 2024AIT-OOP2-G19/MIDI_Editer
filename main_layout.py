@@ -223,6 +223,9 @@ class MainWindow(QMainWindow):
         self.note_manager = NoteManager(self.grid_size)
         self.load_notes_from_manager()
 
+        self.vst = Vst()
+        self.midi_edit = MidiEdit(self.note_manager.to_dict)
+
     def set_button_images(self, button, normal_image, pressed_image):
         """
         ボタンに通常時と押下時の画像を設定
@@ -437,13 +440,13 @@ class MainWindow(QMainWindow):
         # self.note_manager = '''MidiEdit.「midiデータ変換関数」'''
 
     def on_button2_click(self):
-        Vst.render_audio(midi_path, duration)
+        self.vst.render_audio(midi_path, duration)
 
     def on_button3_click(self):
-        Vst.load_vst()
+        self.vst.load_vst()
 
     def on_button4_click(self):
-        Vst.vst_editer()
+        self.vst.vst_editer()
 
     def on_button5_click(self):
         print("再生！！！")
