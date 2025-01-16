@@ -1,10 +1,11 @@
 import PySide6
 from PySide6.QtWidgets import (QApplication, QMainWindow, QGraphicsView, QGraphicsScene,
-    QVBoxLayout, QHBoxLayout, QWidget, QPushButton, QSplitter, QToolBar, QMessageBox)
+    QVBoxLayout, QHBoxLayout, QWidget, QPushButton, QSplitter, QToolBar, QMessageBox, QLabel, QSpinBox)
 from PySide6.QtGui import QIcon, QBrush, QColor, QPen, QAction
 from PySide6.QtCore import Qt, QPoint
 from module.note import Note
 from module.note_manager import NoteManager
+from module.midi_edit import MidiEdit
 from module.vst import Vst
 from module.midi_rw import save_midi
 import os
@@ -31,57 +32,128 @@ class MainWindow(QMainWindow):
             - VST読み込みボタンの作成
             - VST設定ボタンの作成
         '''
-        self.button1 = QPushButton("MIDI 保存", self)
-        self.button1.setGeometry(50, 50, 100, 50)  
-
-        self.button2 = QPushButton("音声書き出し", self)
-        self.button2.setGeometry(150,50, 100, 50) 
-
-        self.button3 = QPushButton("VST 読み込み", self)
-        self.button3.setGeometry(50, 150, 100, 50) 
-
-        self.button4 = QPushButton("VST 設定", self)
-        self.button4.setGeometry(150, 150, 100, 50)
-
-        self.button5 = QPushButton("", self)
-        self.button5.setGeometry(130, 250, 30, 30)
-
-        self.button6 = QPushButton("", self)
-        self.button6.setGeometry(165, 250, 30, 30)
-
-        self.button7 = QPushButton("", self)
-        self.button7.setGeometry(95, 250, 30, 30) 
-
-        icon_path = "再生.png"
-        self.button5.setIcon(QIcon(icon_path))
-        self.button5.setIconSize(self.button5.size())
-
-        icon_path = "一時停止.png"
-        self.button6.setIcon(QIcon(icon_path))
-        self.button6.setIconSize(self.button6.size())
-
-        icon_path = "最初.png"
-        self.button7.setIcon(QIcon(icon_path))
-        self.button7.setIconSize(self.button7.size())
-
-        # ボタンのクリックイベントにスロットを接続
-        self.button1.clicked.connect(self.on_button1_click)
-        self.button2.clicked.connect(self.on_button2_click)
-        self.button3.clicked.connect(self.on_button3_click)
-        self.button4.clicked.connect(self.on_button4_click)
-        self.button5.clicked.connect(self.on_button5_click)
-        self.button6.clicked.connect(self.on_button6_click)
-        self.button7.clicked.connect(self.on_button7_click)
         
+        button_style1 = """
+    QPushButton {
+        background-color: #2196f3;  /* 背景色 */
+        color: #ffff00;               /* テキストの色 */
+        border: 2px solid #388e3c;  /* ボーダーの色 */
+        border-radius: 10px;        /* ボタンの角を丸くする */
+        padding: 5px;               /* テキストの余白 */
+    }
+    QPushButton:hover {
+        background-color: #1085dd;  /* ホバー時の背景色 */
+    }
+    QPushButton:pressed {
+        background-color: #0060cc;  /* 押下時の背景色 */
+    }
+"""
+
+        button_style2 = """
+    QPushButton {
+        background-color: #fbc02d;  /* 背景色 */
+        color: #1033ff;               /* テキストの色 */
+        border: 2px solid #ff9800;  /* ボーダーの色 */
+        border-radius: 10px;        /* ボタンの角を丸くする */
+        padding: 5px;               /* テキストの余白 */
+    }
+    QPushButton:hover {
+        background-color: #dda01a;  /* ホバー時の背景色 */
+    }
+    QPushButton:pressed {
+        background-color: #bb7000;  /* 押下時の背景色 */
+    }
+"""
+
+        button_style3 = """
+    QPushButton {
+        background-color: #0097a7;  /* 背景色 */
+        color: #222222;               /* テキストの色 */
+        border: 2px solid #ff9800;  /* ボーダーの色 */
+        border-radius: 10px;        /* ボタンの角を丸くする */
+        padding: 5px;               /* テキストの余白 */
+    }
+    QPushButton:hover {
+        background-color: #008c90;  /* ホバー時の背景色 */
+    }
+    QPushButton:pressed {
+        background-color: #007787;  /* 押下時の背景色 */
+    }
+"""
+
+        button_style4 = """
+    QPushButton {
+        background-color: #9e9e9e;  /* 背景色 */
+        color: #222222;               /* テキストの色 */
+        border: 2px solid #bbbbbb;  /* ボーダーの色 */
+        border-radius: 10px;        /* ボタンの角を丸くする */
+        padding: 5px;               /* テキストの余白 */
+    }
+    QPushButton:hover {
+        background-color: #a2a2a2;  /* ホバー時の背景色 */
+    }
+    QPushButton:pressed {
+        background-color: #b7b7b7;  /* 押下時の背景色 */
+    }
+"""
+        app.setStyle("Fusion")
+
+        play_button_img = os.path.join('images', '再生.png')
+        play_pushing_img = os.path.join('images', '再生押してる.png')
+        stop_button_img = os.path.join('images', '一時停止.png')
+        stop_pushing_img = os.path.join('images', '一時停止押してる.png')
+        back_button_img = os.path.join('images', '最初.png')
+        back_pushing_img = os.path.join('images', '最初押してる.png')
         button_widget = QWidget()
         button_layout = QVBoxLayout(button_widget)
-        self.play_button = QPushButton("再生")
-        self.stop_button = QPushButton("停止")
-        self.record_button = QPushButton("録音")
+        self.play_button = QPushButton("", self)
+        self.set_button_images(self.play_button, play_button_img, play_pushing_img)
+        self.stop_button = QPushButton("", self)
+        self.set_button_images(self.stop_button, stop_button_img, stop_pushing_img)
+        self.back_button = QPushButton("", self)
+        self.set_button_images(self.back_button, back_button_img, back_pushing_img)
+        self.midi_save = QPushButton("MIDI 保存", self)
+        self.midi_save.setStyleSheet(button_style1)
+        self.sound_write = QPushButton("音声書き出し", self)
+        self.sound_write.setStyleSheet(button_style2)
+        self.vst_read = QPushButton("VST 読み込み", self)
+        self.vst_read.setStyleSheet(button_style3)
+        self.vst_option = QPushButton("VST 設定", self)
+        self.vst_option.setStyleSheet(button_style4)
         button_layout.addWidget(self.play_button)
         button_layout.addWidget(self.stop_button)
-        button_layout.addWidget(self.record_button)
+
+        button_layout.addWidget(self.back_button)
+        button_layout.addWidget(self.midi_save)
+        button_layout.addWidget(self.sound_write)
+        button_layout.addWidget(self.vst_read)
+        button_layout.addWidget(self.vst_option)
+
+        # テンポ設定用のスピンボックスを作成
+        self.tempo_spinbox = QSpinBox()
+        self.tempo_spinbox.setRange(10, 400)  # BPMの範囲を設定（10～400）
+        self.tempo_spinbox.setValue(120)  # デフォルトのテンポを設定
+        self.tempo_spinbox.setSuffix(" BPM")  # スピンボックスに単位を追加
+        button_layout.addWidget(self.tempo_spinbox)
+
+        
+         # ボタンの外枠と焦点インジケータを完全に消す
+        self.play_button.setStyleSheet("border: none; outline: none;")
+        self.stop_button.setStyleSheet("border: none; outline: none;")
+        self.back_button.setStyleSheet("border: none; outline: none;")
+
+        # ボタンのクリックイベントにスロットを接続
+        self.midi_save.clicked.connect(self.on_button1_click)
+        self.sound_write.clicked.connect(self.on_button2_click)
+        self.vst_read.clicked.connect(self.on_button3_click)
+        self.vst_option.clicked.connect(self.on_button4_click)
+        self.play_button.clicked.connect(self.on_button5_click)
+        self.stop_button.clicked.connect(self.on_button6_click)
+        self.back_button.clicked.connect(self.on_button7_click)
+
         button_layout.addStretch()  # ボタン下にスペースを追加
+
+
 
         # 右側の部分をさらに分割
         right_splitter = QSplitter(Qt.Horizontal)
@@ -157,7 +229,27 @@ class MainWindow(QMainWindow):
         self.init_piano_keys()
         self.init_piano_roll()
         self.note_manager = NoteManager(self.grid_size)
-        
+        self.load_notes_from_manager()
+
+        self.vst = Vst()
+        self.midi_edit = MidiEdit(self.note_manager.to_dict)
+
+    def set_button_images(self, button, normal_image, pressed_image):
+        """
+        ボタンに通常時と押下時の画像を設定
+        """
+        normal_icon = QIcon(normal_image)
+        pressed_icon = QIcon(pressed_image)
+
+        # 通常時のアイコンを設定
+        button.setIcon(normal_icon)
+        button.setIconSize(button.size())
+
+        # 押下時と通常時のアイコンを切り替えるシグナル
+        button.pressed.connect(lambda: button.setIcon(pressed_icon))
+        button.released.connect(lambda: button.setIcon(normal_icon))
+
+
     def closeEvent(self, event):
         reply = QMessageBox.question(self, "確認", "MIDIファイルを保存しますか？",
                                      QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel, QMessageBox.Cancel)
@@ -171,7 +263,7 @@ class MainWindow(QMainWindow):
             
     def init_bar_area(self):
         """小節部分を初期化"""
-        roll_width = 8090
+        roll_width = 64000
         bar_width = self.grid_size * 16  # 1小節の幅（16グリット）
         bar_height = 40
 
@@ -199,7 +291,6 @@ class MainWindow(QMainWindow):
 
 
         for i in range(keys):
-            print(i)
             y = i * key_height  # 鍵盤を下から並べる
             is_white = pattern[i % pattern_length]
             note_name = "C" if (i % pattern_length == 0) else None  # C の位置を判定
@@ -236,7 +327,7 @@ class MainWindow(QMainWindow):
 
     def init_piano_roll(self):
         """ピアノロール部分を初期化"""
-        roll_width = 8090
+        roll_width = 64000
         key_height = self.grid_size
         keys = 60  # 鍵盤の数
 
@@ -262,7 +353,7 @@ class MainWindow(QMainWindow):
             if self.roll_view.underMouse():
                 # シーン座標を取得
                 position = self.roll_view.mapToScene(event.position().toPoint())
-                offset_x = 198 # 鍵盤部分
+                offset_x = 238 # 鍵盤部分
                 offset_y = -60 # 小節部分
                 x = position.x() - offset_x
                 y = position.y() - offset_y
@@ -290,6 +381,9 @@ class MainWindow(QMainWindow):
                 self.roll_scene.addItem(note)
                 print(f"Note Item Position: x={note.scenePos().x()}, y={note.scenePos().y()}")
 
+                # 作成したノートの高さの音を鳴らす
+                self.vst.play_note(self.midi_edit.y2pitch(note_y // self.grid_size))
+
     def remove_note_item(self, note_item):
         """指定されたノートアイテムを削除"""
         note_id = note_item.data(0)  # NoteManagerで管理されているノートIDを取得
@@ -309,29 +403,63 @@ class MainWindow(QMainWindow):
             # ノートの現在の位置とサイズを取得
             rect = note_item.rect()
             pos = note_item.scenePos()
-            grid_height_max = 59 # 0から59の60個
-
-            left_x = round(pos.x() / self.grid_size)
-            right_x = round((pos.x() + rect.width()) / self.grid_size)
-            y_pos = grid_height_max + round(pos.y() / self.grid_size)
+            left_x = round((rect.x()+pos.x()) / self.grid_size)
+            right_x = round(((rect.x()+pos.x()) + rect.width()) / self.grid_size)
+            y_pos = round((rect.y()+pos.y()) / self.grid_size)
 
             # NoteManager を更新
             self.note_manager.update_note(note_id, left_x=left_x, right_x=right_x, y_pos=y_pos)
 
+            self.vst.play_note(self.midi_edit.y2pitch(y_pos))
+
             # デバッグ情報
             print(f"Note Updated: ID={note_id}, left_x={left_x}, right_x={right_x}, y_pos={y_pos}")
+
+    def load_notes_from_manager(self):
+        """NoteManagerのデータを元にノートを再生成して表示"""
+        data = self.note_manager.to_dict()
+        print(data)  # 返り値を確認
+        notes = data.get("notes", {})
+        print(notes)  # ノートデータが正しく取得できているか確認
+        # 各ノートを再生成
+        for note_id, note_data in notes.items():
+            print(type(note_data))  # note_data の型を確認
+            # ノート情報を取得
+            note_id = note_data["id"]
+            left_x = note_data["left_x"] * self.grid_size
+            right_x = note_data["right_x"] * self.grid_size
+            y_pos = note_data["y_pos"] * self.grid_size
+
+            # ノートの幅を計算
+            note_width = right_x - left_x
+            note_height = self.grid_size  # ノートの高さは1グリッド
+
+            # ノートを生成
+            note = Note(left_x, y_pos, note_width, note_height, self.grid_size)
+            note.setData(0, note_id)  # NoteManagerのIDを設定
+
+            # シーンに追加
+            self.roll_scene.addItem(note)
+
+            # デバッグ用出力
+            print(f"Loaded Note ID: {note_id}, Position: x={left_x}, y={y_pos}, width={note_width}")
+
             
     def on_button1_click(self):
+        bpm = 120
         print("保存！")
+        self.midi_edit = MidiEdit(self.note_manager.to_dict())
+        self.midi = self.midi_edit.note2midi(bpm)
+        # self.note_manager = '''MidiEdit.「midiデータ変換関数」'''
 
     def on_button2_click(self):
-        Vst.render_audio(midi_path, duration)
+        self.vst.render_audio(midi_path, duration)
 
     def on_button3_click(self):
-        Vst.load_vst()
+        self.vst.load_vst()
 
     def on_button4_click(self):
-        Vst.vst_editer()
+        self.vst.vst_editer()
 
     def on_button5_click(self):
         print("再生！！！")
