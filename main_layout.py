@@ -96,7 +96,6 @@ class MainWindow(QMainWindow):
         background-color: #b7b7b7;  /* 押下時の背景色 */
     }
 """
-        app.setStyle("Fusion")
 
         play_button_img = os.path.join('images', '再生.png')
         play_pushing_img = os.path.join('images', '再生押してる.png')
@@ -381,7 +380,7 @@ class MainWindow(QMainWindow):
                 print(f"Note Item Position: x={note.scenePos().x()}, y={note.scenePos().y()}")
 
                 # 作成したノートの高さの音を鳴らす
-                self.vst.play_note(self.midi_edit.y2pitch(note_y // self.grid_size))
+                self.vst.play_note(y2pitch(note_y // self.grid_size))
 
     def remove_note_item(self, note_item):
         """指定されたノートアイテムを削除"""
@@ -409,7 +408,7 @@ class MainWindow(QMainWindow):
             # NoteManager を更新
             self.note_manager.update_note(note_id, left_x=left_x, right_x=right_x, y_pos=y_pos)
 
-            self.vst.play_note(self.midi_edit.y2pitch(y_pos))
+            self.vst.play_note(y2pitch(y_pos))
 
             # デバッグ情報
             print(f"Note Updated: ID={note_id}, left_x={left_x}, right_x={right_x}, y_pos={y_pos}")
