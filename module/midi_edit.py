@@ -74,7 +74,7 @@ def midi2note(midi):
     for i, data_mid in enumerate(datas_mid):
         if(data_mid["noteEnable"] == "note_on"):
             entry = {"id": i//2 + 1, "left_x": datas_mid[i]["time"], "right_x": datas_mid[i+1]["time"], "y_pos": data_mid["note"]}
-            note_manager[i] = {"id":entry["id"], "left_x": entry["left_x"], "right_x": entry["right_x"], "y_pos": entry["y_pos"]}
+            note_manager[i//2 + 1] = {"id":entry["id"], "left_x": entry["left_x"], "right_x": entry["right_x"], "y_pos": entry["y_pos"]}
             
     return note_manager
 
