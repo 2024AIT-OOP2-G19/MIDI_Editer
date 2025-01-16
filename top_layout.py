@@ -65,7 +65,7 @@ class TopWindow(QWidget):              # ウィンドウ系クラスを継承す
         self.button1 = QPushButton("new", self)
         font = QFont("Impact", 18, QFont.Bold) 
         self.button1.setFont(font)
-        self.button1.setStyleSheet("background-color: white;")
+        self.button1.setStyleSheet("background-color: white; color: black;")
         self.button1.clicked.connect(self.on_button1_click)
         self.button1.setGeometry(75, 150, 125, 50)
 
@@ -73,7 +73,7 @@ class TopWindow(QWidget):              # ウィンドウ系クラスを継承す
         self.button2 = QPushButton("load", self)
         font = QFont("Impact", 18, QFont.Bold) 
         self.button2.setFont(font)
-        self.button2.setStyleSheet("background-color: white;")
+        self.button2.setStyleSheet("background-color: white; color: black;")
         self.button2.clicked.connect(self.on_button2_click)
         self.button2.setGeometry(75, 200, 125, 50)
 
