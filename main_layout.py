@@ -221,6 +221,7 @@ class MainWindow(QMainWindow):
         self.init_piano_keys()
         self.init_piano_roll()
         self.note_manager = NoteManager(self.grid_size)
+        self.load_notes_from_manager()
 
     def set_button_images(self, button, normal_image, pressed_image):
         """
@@ -279,7 +280,6 @@ class MainWindow(QMainWindow):
 
 
         for i in range(keys):
-            print(i)
             y = i * key_height  # 鍵盤を下から並べる
             is_white = pattern[i % pattern_length]
             note_name = "C" if (i % pattern_length == 0) else None  # C の位置を判定
@@ -389,17 +389,45 @@ class MainWindow(QMainWindow):
             # ノートの現在の位置とサイズを取得
             rect = note_item.rect()
             pos = note_item.scenePos()
-            grid_height_max = 59 # 0から59の60個
-
-            left_x = round(pos.x() / self.grid_size)
-            right_x = round((pos.x() + rect.width()) / self.grid_size)
-            y_pos = grid_height_max + round(pos.y() / self.grid_size)
+            left_x = round((rect.x()+pos.x()) / self.grid_size)
+            right_x = round(((rect.x()+pos.x()) + rect.width()) / self.grid_size)
+            y_pos = round((rect.y()+pos.y()) / self.grid_size)
 
             # NoteManager を更新
             self.note_manager.update_note(note_id, left_x=left_x, right_x=right_x, y_pos=y_pos)
 
             # デバッグ情報
             print(f"Note Updated: ID={note_id}, left_x={left_x}, right_x={right_x}, y_pos={y_pos}")
+
+    def load_notes_from_manager(self):
+        """NoteManagerのデータを元にノートを再生成して表示"""
+        data = self.note_manager.to_dict()
+        print(data)  # 返り値を確認
+        notes = data.get("notes", {})
+        print(notes)  # ノートデータが正しく取得できているか確認
+        # 各ノートを再生成
+        for note_id, note_data in notes.items():
+            print(type(note_data))  # note_data の型を確認
+            # ノート情報を取得
+            note_id = note_data["id"]
+            left_x = note_data["left_x"] * self.grid_size
+            right_x = note_data["right_x"] * self.grid_size
+            y_pos = note_data["y_pos"] * self.grid_size
+
+            # ノートの幅を計算
+            note_width = right_x - left_x
+            note_height = self.grid_size  # ノートの高さは1グリッド
+
+            # ノートを生成
+            note = Note(left_x, y_pos, note_width, note_height, self.grid_size)
+            note.setData(0, note_id)  # NoteManagerのIDを設定
+
+            # シーンに追加
+            self.roll_scene.addItem(note)
+
+            # デバッグ用出力
+            print(f"Loaded Note ID: {note_id}, Position: x={left_x}, y={y_pos}, width={note_width}")
+
             
     def on_button1_click(self):
         bpm = 120
