@@ -402,6 +402,8 @@ class MainWindow(QMainWindow):
             # NoteManager を更新
             self.note_manager.update_note(note_id, left_x=left_x, right_x=right_x, y_pos=y_pos)
 
+            self.vst.play_note(self.midi_edit.y2pitch(y_pos))
+
             # デバッグ情報
             print(f"Note Updated: ID={note_id}, left_x={left_x}, right_x={right_x}, y_pos={y_pos}")
 
