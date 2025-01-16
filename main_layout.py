@@ -131,7 +131,7 @@ class MainWindow(QMainWindow):
 
         # テンポ設定用のスピンボックスを作成
         self.tempo_spinbox = QSpinBox()
-        self.tempo_spinbox.setRange(60, 200)  # BPMの範囲を設定（60～200）
+        self.tempo_spinbox.setRange(10, 400)  # BPMの範囲を設定（10～400）
         self.tempo_spinbox.setValue(120)  # デフォルトのテンポを設定
         self.tempo_spinbox.setSuffix(" BPM")  # スピンボックスに単位を追加
         button_layout.addWidget(self.tempo_spinbox)
