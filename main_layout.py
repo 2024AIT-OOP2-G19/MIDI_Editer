@@ -7,7 +7,9 @@ from module.note import Note
 from module.note_manager import NoteManager
 from module.midi_edit import note2midi, midi2note, y2pitch
 from module.vst import Vst
+
 from module.midi_rw import save_midi, load_midi
+
 import os
 import sys
 import module 
@@ -21,6 +23,11 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.setWindowTitle("ピアノロール GUI")
         self.setGeometry(100, 100, 1500, 1000)
+
+        self.grid_size = 20  # グリッドのサイズ
+        self.note_manager = NoteManager(self.grid_size)
+        if midi_path != None:
+            self.note_manager.notes = midi2note(load_midi(midi_path))
 
         # メインウィジェットとスプリッター（左右分割）
         main_widget = QWidget()
@@ -227,11 +234,9 @@ class MainWindow(QMainWindow):
             self.keys_view.verticalScrollBar().setValue
         )
 
-        self.grid_size = 20  # グリッドのサイズ
         self.init_bar_area()
         self.init_piano_keys()
         self.init_piano_roll()
-        self.note_manager = NoteManager(self.grid_size)
         self.load_notes_from_manager()
 
         self.vst = Vst()
