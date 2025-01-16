@@ -1,19 +1,23 @@
 import PySide6
 from PySide6.QtWidgets import (QApplication, QMainWindow, QGraphicsView, QGraphicsScene,
-    QVBoxLayout, QHBoxLayout, QWidget, QPushButton, QSplitter, QToolBar, QMessageBox, QLabel, QSpinBox)
+    QVBoxLayout, QHBoxLayout, QWidget, QPushButton, QSplitter, QToolBar, QMessageBox, QLabel, QSpinBox, QFileDialog)
 from PySide6.QtGui import QIcon, QBrush, QColor, QPen, QAction
 from PySide6.QtCore import Qt, QPoint
 from module.note import Note
 from module.note_manager import NoteManager
 from module.midi_edit import note2midi, midi2note, y2pitch
 from module.vst import Vst
-from module.midi_rw import save_midi
+from module.midi_rw import save_midi, load_midi
 import os
 import sys
 import module 
 
 class MainWindow(QMainWindow):
-    def __init__(self):
+    def __init__(self, file_path=None):
+        self.file_path = file_path
+        self.midi = load_midi(file_path)
+        print(self.file_path)
+        
         super().__init__()
         self.setWindowTitle("ピアノロール GUI")
         self.setGeometry(100, 100, 1500, 1000)
@@ -96,7 +100,6 @@ class MainWindow(QMainWindow):
         background-color: #b7b7b7;  /* 押下時の背景色 */
     }
 """
-        app.setStyle("Fusion")
 
         play_button_img = os.path.join('images', '再生.png')
         play_pushing_img = os.path.join('images', '再生押してる.png')
@@ -253,8 +256,8 @@ class MainWindow(QMainWindow):
         reply = QMessageBox.question(self, "確認", "MIDIファイルを保存しますか？",
                                      QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel, QMessageBox.Cancel)
         if reply == QMessageBox.Yes:
-            save_midi(self.midi_file, self.file_path)
-            event.accept()  # midiファイルを保存してウィンドウを閉じる
+            save_midi(self, self.midi, self.file_path) # midiファイルを保存
+            event.accept()  # ウィンドウを閉じる
         elif reply == QMessageBox.No:
             event.accept()  # ウィンドウを閉じる
         else:
@@ -381,7 +384,7 @@ class MainWindow(QMainWindow):
                 print(f"Note Item Position: x={note.scenePos().x()}, y={note.scenePos().y()}")
 
                 # 作成したノートの高さの音を鳴らす
-                self.vst.play_note(self.midi_edit.y2pitch(note_y // self.grid_size))
+                self.vst.play_note(y2pitch(note_y // self.grid_size))
 
     def remove_note_item(self, note_item):
         """指定されたノートアイテムを削除"""
@@ -409,7 +412,7 @@ class MainWindow(QMainWindow):
             # NoteManager を更新
             self.note_manager.update_note(note_id, left_x=left_x, right_x=right_x, y_pos=y_pos)
 
-            self.vst.play_note(self.midi_edit.y2pitch(y_pos))
+            self.vst.play_note(y2pitch(y_pos))
 
             # デバッグ情報
             print(f"Note Updated: ID={note_id}, left_x={left_x}, right_x={right_x}, y_pos={y_pos}")
@@ -443,17 +446,11 @@ class MainWindow(QMainWindow):
             # デバッグ用出力
             print(f"Loaded Note ID: {note_id}, Position: x={left_x}, y={y_pos}, width={note_width}")
 
-            
     def on_button1_click(self):
         bpm = 120
         print("保存！")
         self.midi = note2midi(self.note_manager.to_dict(), bpm)
-        '''
-        どこかにmidiファイルを出力する作業が必要
-        pathとファイル名を取ってくる必要がある
-        ファイルを読み込んでいない場合、ここでpathとファイル名を指定する必要あり
-        '''
-        save_midi(self.midi)
+        save_midi(self, self.midi, self.file_path) # midiファイルを保存
 
     def on_button2_click(self):
         self.vst.render_audio(midi_path, duration)

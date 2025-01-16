@@ -38,7 +38,7 @@ class TopWindow(QWidget):              # ウィンドウ系クラスを継承す
 
     def on_button2_click(self,file_path):
 
-        file_path,check = QFileDialog.getOpenFileName(None, "ファイルを選択してください。","","All Files (*);;mid Files (*.mid)")
+        file_path,check = QFileDialog.getOpenFileName(None, "ファイルを選択してください。","","mid Files (*.mid)")
 
         if check:
 
