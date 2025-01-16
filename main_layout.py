@@ -5,7 +5,7 @@ from PySide6.QtGui import QIcon, QBrush, QColor, QPen, QAction
 from PySide6.QtCore import Qt, QPoint
 from module.note import Note
 from module.note_manager import NoteManager
-from module.midi_edit import MidiEdit
+from module.midi_edit import note2midi, midi2note, y2pitch
 from module.vst import Vst
 from module.midi_rw import save_midi
 import os
@@ -232,7 +232,6 @@ class MainWindow(QMainWindow):
         self.load_notes_from_manager()
 
         self.vst = Vst()
-        self.midi_edit = MidiEdit(self.note_manager.to_dict)
 
     def set_button_images(self, button, normal_image, pressed_image):
         """
@@ -448,9 +447,13 @@ class MainWindow(QMainWindow):
     def on_button1_click(self):
         bpm = 120
         print("保存！")
-        self.midi_edit = MidiEdit(self.note_manager.to_dict())
-        self.midi = self.midi_edit.note2midi(bpm)
-        # self.note_manager = '''MidiEdit.「midiデータ変換関数」'''
+        self.midi = note2midi(self.note_manager.to_dict(), bpm)
+        '''
+        どこかにmidiファイルを出力する作業が必要
+        pathとファイル名を取ってくる必要がある
+        ファイルを読み込んでいない場合、ここでpathとファイル名を指定する必要あり
+        '''
+        save_midi(self.midi)
 
     def on_button2_click(self):
         self.vst.render_audio(midi_path, duration)
