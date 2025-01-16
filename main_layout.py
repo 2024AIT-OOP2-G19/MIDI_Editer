@@ -1,6 +1,6 @@
 import PySide6
 from PySide6.QtWidgets import (QApplication, QMainWindow, QGraphicsView, QGraphicsScene,
-    QVBoxLayout, QHBoxLayout, QWidget, QPushButton, QSplitter, QToolBar, QMessageBox)
+    QVBoxLayout, QHBoxLayout, QWidget, QPushButton, QSplitter, QToolBar, QMessageBox, QLabel, QSpinBox)
 from PySide6.QtGui import QIcon, QBrush, QColor, QPen, QAction
 from PySide6.QtCore import Qt, QPoint
 from module.note import Note
@@ -128,6 +128,14 @@ class MainWindow(QMainWindow):
         button_layout.addWidget(self.sound_write)
         button_layout.addWidget(self.vst_read)
         button_layout.addWidget(self.vst_option)
+
+        # テンポ設定用のスピンボックスを作成
+        self.tempo_spinbox = QSpinBox()
+        self.tempo_spinbox.setRange(60, 200)  # BPMの範囲を設定（60～200）
+        self.tempo_spinbox.setValue(120)  # デフォルトのテンポを設定
+        self.tempo_spinbox.setSuffix(" BPM")  # スピンボックスに単位を追加
+        button_layout.addWidget(self.tempo_spinbox)
+
         
          # ボタンの外枠と焦点インジケータを完全に消す
         self.play_button.setStyleSheet("border: none; outline: none;")
