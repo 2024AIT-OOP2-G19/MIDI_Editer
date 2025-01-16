@@ -12,7 +12,7 @@ def note2midi(note_manager, bpm):
     # 初めのx座標、終わりのx座標でそれぞれ(on/off, y座標, x座標)のセットに変える
     # 座標の値をそれぞれy座標→note, x座標→time用の長さに変換したものに変える
     datas_noteXY =[]
-    for data_xy in note_manager:
+    for key, data_xy in note_manager.items():
         entryLeft = {"noteEnable": "note_on", "y": data_xy["y_pos"] + MIDI_PITCH_ADJUST, "x": data_xy["left_x"] * SEMIQUAVER_VALUE}
         entryRight = {"noteEnable": "note_off", "y": data_xy["y_pos"] + MIDI_PITCH_ADJUST, "x": data_xy["right_x"] * SEMIQUAVER_VALUE}
         datas_noteXY.append(entryLeft)
@@ -48,7 +48,7 @@ def note2midi(note_manager, bpm):
 def midi2note(midi):
     # midデータを取り出して辞書型の配列に直す
     datas_mid = []
-    for midMessage in midi.mid.tracks[0]:
+    for midMessage in midi.tracks[0]:
         if hasattr(midMessage, 'note'):  # hasattrはオブジェクトに指定した属性(今回はnote)が存在するか確かめる関数
             entry = {"noteEnable": midMessage.type, "note": midMessage.note, "time": midMessage.time}
             datas_mid.append(entry)
@@ -68,13 +68,13 @@ def midi2note(midi):
     datas_mid.sort(key=lambda x: (x["note"], x["time"]))
     
     # note_managerを初期化
-    note_manager = []
+    note_manager = {}
     
     # on側とoff側を合体
     for i, data_mid in enumerate(datas_mid):
         if(data_mid["noteEnable"] == "note_on"):
             entry = {"id": i//2 + 1, "left_x": datas_mid[i]["time"], "right_x": datas_mid[i+1]["time"], "y_pos": data_mid["note"]}
-            note_manager.append(entry)
+            note_manager[i] = {"id":entry["id"], "left_x": entry["left_x"], "right_x": entry["right_x"], "y_pos": entry["y_pos"]}
             
     return note_manager
 
