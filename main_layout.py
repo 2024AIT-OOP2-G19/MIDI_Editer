@@ -457,7 +457,7 @@ class MainWindow(QMainWindow):
 
     def on_button2_click(self):
         save_midi(self, note2midi(self.note_manager.to_dict(), self.bpm), self.file_path)
-        self.vst.render_audio(self.file_path, note2midi(self.note_manager.to_dict(), self.bpm).length())
+        self.vst.render_audio(self.file_path, note2midi(self.note_manager.to_dict(), self.bpm).length + 4*(60/self.bpm))
 
     def on_button3_click(self):
         self.vst.load_vst()
@@ -467,7 +467,7 @@ class MainWindow(QMainWindow):
 
     def on_button5_click(self):
         save_midi(self, note2midi(self.note_manager.to_dict(), self.bpm), self.file_path)
-        self.vst.play_midi_file(self.file_path, note2midi(self.note_manager.to_dict(), self.bpm).length())
+        self.vst.play_midi_file(self.file_path, note2midi(self.note_manager.to_dict(), self.bpm).length + 4*(60/self.bpm))
 
     def on_button6_click(self):
         self.vst.stop_audio()
