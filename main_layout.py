@@ -277,7 +277,7 @@ class MainWindow(QMainWindow):
         reply = QMessageBox.question(self, "確認", "MIDIファイルを保存しますか？",
                                      QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel, QMessageBox.Cancel)
         if reply == QMessageBox.Yes:
-            save_midi(self, self.midi, self.file_path) # midiファイルを保存
+            self.file_path = save_midi(self, self.midi, self.file_path) # midiファイルを保存
             event.accept()  # ウィンドウを閉じる
         elif reply == QMessageBox.No:
             event.accept()  # ウィンドウを閉じる
@@ -469,10 +469,10 @@ class MainWindow(QMainWindow):
         bpm = 120
         print("保存！")
         self.midi = note2midi(self.note_manager.to_dict(), bpm)
-        save_midi(self, self.midi, self.file_path) # midiファイルを保存
+        self.file_path = save_midi(self, self.midi, self.file_path) # midiファイルを保存
 
     def on_button2_click(self):
-        save_midi(self, note2midi(self.note_manager.to_dict(), self.bpm), self.file_path)
+        self.file_path = save_midi(self, note2midi(self.note_manager.to_dict(), self.bpm), self.file_path)
         self.vst.render_audio(self.file_path, note2midi(self.note_manager.to_dict(), self.bpm).length + 4*(60/self.bpm))
 
     def on_button3_click(self):
@@ -482,7 +482,7 @@ class MainWindow(QMainWindow):
         self.vst.vst_editer()
 
     def on_button5_click(self):
-        save_midi(self, note2midi(self.note_manager.to_dict(), self.bpm), self.file_path)
+        self.file_path = save_midi(self, note2midi(self.note_manager.to_dict(), self.bpm), self.file_path)
         self.vst.play_midi_file(self.file_path, note2midi(self.note_manager.to_dict(), self.bpm).length + 4*(60/self.bpm))
 
     def on_button6_click(self):
