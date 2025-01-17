@@ -113,16 +113,12 @@ class MainWindow(QMainWindow):
         play_pushing_img = os.path.join('images', '再生押してる.png')
         stop_button_img = os.path.join('images', '一時停止.png')
         stop_pushing_img = os.path.join('images', '一時停止押してる.png')
-        back_button_img = os.path.join('images', '最初.png')
-        back_pushing_img = os.path.join('images', '最初押してる.png')
         button_widget = QWidget()
         button_layout = QVBoxLayout(button_widget)
         self.play_button = QPushButton("", self)
         self.set_button_images(self.play_button, play_button_img, play_pushing_img)
         self.stop_button = QPushButton("", self)
         self.set_button_images(self.stop_button, stop_button_img, stop_pushing_img)
-        self.back_button = QPushButton("", self)
-        self.set_button_images(self.back_button, back_button_img, back_pushing_img)
         self.midi_save = QPushButton("MIDI 保存", self)
         self.midi_save.setStyleSheet(button_style1)
         self.sound_write = QPushButton("音声書き出し", self)
@@ -134,7 +130,6 @@ class MainWindow(QMainWindow):
         button_layout.addWidget(self.play_button)
         button_layout.addWidget(self.stop_button)
 
-        button_layout.addWidget(self.back_button)
         button_layout.addWidget(self.midi_save)
         button_layout.addWidget(self.sound_write)
         button_layout.addWidget(self.vst_read)
@@ -151,7 +146,6 @@ class MainWindow(QMainWindow):
          # ボタンの外枠と焦点インジケータを完全に消す
         self.play_button.setStyleSheet("border: none; outline: none;")
         self.stop_button.setStyleSheet("border: none; outline: none;")
-        self.back_button.setStyleSheet("border: none; outline: none;")
 
         # ボタンのクリックイベントにスロットを接続
         self.midi_save.clicked.connect(self.on_button1_click)
@@ -160,7 +154,6 @@ class MainWindow(QMainWindow):
         self.vst_option.clicked.connect(self.on_button4_click)
         self.play_button.clicked.connect(self.on_button5_click)
         self.stop_button.clicked.connect(self.on_button6_click)
-        self.back_button.clicked.connect(self.on_button7_click)
 
         button_layout.addStretch()  # ボタン下にスペースを追加
 
@@ -473,9 +466,6 @@ class MainWindow(QMainWindow):
     def on_button6_click(self):
         self.vst.stop_audio()
         print("停止！！！")
-
-    def on_button7_click(self):
-        print("戻れ！！！")
 
 if __name__ == "__main__":
     # 環境変数にPySide6を登録
