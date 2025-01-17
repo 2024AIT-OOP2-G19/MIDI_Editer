@@ -57,7 +57,7 @@ class Vst():
         file,check = QFileDialog.getSaveFileName(None, "名前をつけて保存", wavfile_path,"wavファイル (*.wav)")
 
         if check:
-            self.plugin.load_midi(midi_path, clear_previous=True, beats=True, all_events=True)
+            self.plugin.load_midi(midi_path, clear_previous=True, beats=False, all_events=True)
 
             graph = [
             (self.plugin, []),
