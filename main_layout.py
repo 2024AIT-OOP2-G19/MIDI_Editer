@@ -113,8 +113,10 @@ class MainWindow(QMainWindow):
         play_pushing_img = os.path.join('images', '再生押してる.png')
         stop_button_img = os.path.join('images', '一時停止.png')
         stop_pushing_img = os.path.join('images', '一時停止押してる.png')
-        button_widget = QWidget()
-        button_layout = QVBoxLayout(button_widget)
+        self.button_widget = QWidget()
+        button_layout = QVBoxLayout(self.button_widget)
+        self.play_stop_widget = QWidget()
+        play_stop_layout = QHBoxLayout(self.play_stop_widget)
         self.play_button = QPushButton("", self)
         self.set_button_images(self.play_button, play_button_img, play_pushing_img)
         self.stop_button = QPushButton("", self)
@@ -127,8 +129,10 @@ class MainWindow(QMainWindow):
         self.vst_read.setStyleSheet(button_style3)
         self.vst_option = QPushButton("VST 設定", self)
         self.vst_option.setStyleSheet(button_style4)
-        button_layout.addWidget(self.play_button)
-        button_layout.addWidget(self.stop_button)
+
+        button_layout.addWidget(self.play_stop_widget)
+        play_stop_layout.addWidget(self.play_button)
+        play_stop_layout.addWidget(self.stop_button)
 
         button_layout.addWidget(self.midi_save)
         button_layout.addWidget(self.sound_write)
@@ -210,8 +214,10 @@ class MainWindow(QMainWindow):
         right_splitter.setStretchFactor(1, 3)  # ピアノロール部分を広げる
 
         # 左右を分割する
-        splitter.addWidget(button_widget)  # ボタンスペース
+        splitter.addWidget(self.button_widget)  # ボタンスペース
         splitter.addWidget(right_splitter)  # 右側部分
+
+        splitter.widget(0).setFixedWidth(130) # ボタンスペースの幅設定
 
         # メインレイアウトにスプリッターを追加
         main_layout.addWidget(splitter)
