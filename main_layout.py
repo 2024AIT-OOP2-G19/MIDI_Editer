@@ -165,9 +165,11 @@ class MainWindow(QMainWindow):
 
         # 右側の部分をさらに分割
         right_splitter = QSplitter(Qt.Horizontal)
+        self.set_hundle_disabled(right_splitter)
 
         # 右側を上下に分割した部分
         top_right_splitter = QSplitter(Qt.Vertical)
+        self.set_hundle_disabled(top_right_splitter)
 
         # 右上にスペース部分（小節と同じ高さ）
         self.space_widget = QWidget()
@@ -189,6 +191,7 @@ class MainWindow(QMainWindow):
 
         # 右側の右部分をさらに上下に分割
         bottom_right_splitter = QSplitter(Qt.Vertical)
+        self.set_hundle_disabled(bottom_right_splitter)
 
         # 右上に小節部分
         self.bar_scene = QGraphicsScene()
@@ -218,6 +221,7 @@ class MainWindow(QMainWindow):
         splitter.addWidget(right_splitter)  # 右側部分
 
         splitter.widget(0).setFixedWidth(130) # ボタンスペースの幅設定
+        self.set_hundle_disabled(splitter)
 
         # メインレイアウトにスプリッターを追加
         main_layout.addWidget(splitter)
@@ -240,6 +244,18 @@ class MainWindow(QMainWindow):
         self.load_notes_from_manager()
 
         self.vst = Vst()
+
+    def set_hundle_disabled(self, splitter:QSplitter):
+        """
+        splitterのハンドルを無効化
+        """
+        splitter.setStyleSheet(
+            """
+            QSplitter::handle {
+            background: none;
+            }
+            """)
+        splitter.setChildrenCollapsible(False)
 
     def set_button_images(self, button, normal_image, pressed_image):
         """
