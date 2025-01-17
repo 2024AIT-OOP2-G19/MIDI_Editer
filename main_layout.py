@@ -144,6 +144,7 @@ class MainWindow(QMainWindow):
         self.tempo_spinbox.setRange(10, 400)  # BPMの範囲を設定（10～400）
         self.tempo_spinbox.setValue(self.bpm)  # デフォルトのテンポを設定
         self.tempo_spinbox.setSuffix(" BPM")  # スピンボックスに単位を追加
+        self.tempo_spinbox.valueChanged.connect(lambda: self.update_bpm(self.tempo_spinbox.value()))
         button_layout.addWidget(self.tempo_spinbox)
 
         
@@ -272,6 +273,9 @@ class MainWindow(QMainWindow):
         button.pressed.connect(lambda: button.setIcon(pressed_icon))
         button.released.connect(lambda: button.setIcon(normal_icon))
 
+    def update_bpm(self, bpm:float):
+        self.bpm = bpm
+        print(f'bpm changed to {self.bpm}!')
 
     def closeEvent(self, event):
         reply = QMessageBox.question(self, "確認", "MIDIファイルを保存しますか？",
