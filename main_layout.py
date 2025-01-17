@@ -28,7 +28,7 @@ class MainWindow(QMainWindow):
         self.bpm = 120
         self.note_manager = NoteManager(self.grid_size)
         if file_path != None:
-            self.note_manager.notes = midi2note(self.midi)
+            self.note_manager.notes, self.bpm = midi2note(self.midi)
 
         # メインウィジェットとスプリッター（左右分割）
         main_widget = QWidget()
@@ -143,7 +143,7 @@ class MainWindow(QMainWindow):
         # テンポ設定用のスピンボックスを作成
         self.tempo_spinbox = QSpinBox()
         self.tempo_spinbox.setRange(10, 400)  # BPMの範囲を設定（10～400）
-        self.tempo_spinbox.setValue(120)  # デフォルトのテンポを設定
+        self.tempo_spinbox.setValue(self.bpm)  # デフォルトのテンポを設定
         self.tempo_spinbox.setSuffix(" BPM")  # スピンボックスに単位を追加
         button_layout.addWidget(self.tempo_spinbox)
 
@@ -451,14 +451,13 @@ class MainWindow(QMainWindow):
             print(f"Loaded Note ID: {note_id}, Position: x={left_x}, y={y_pos}, width={note_width}")
 
     def on_button1_click(self):
-        bpm = 120
         print("保存！")
-        self.midi = note2midi(self.note_manager.to_dict(), bpm)
+        self.midi = note2midi(self.note_manager.to_dict(), self.bpm)
         save_midi(self, self.midi, self.file_path) # midiファイルを保存
 
     def on_button2_click(self):
         save_midi(self, note2midi(self.note_manager.to_dict(), self.bpm), self.file_path)
-        self.vst.render_audio(self.file_path, note2midi(self.note_manager.to_dict(), self.bpm).legth())
+        self.vst.render_audio(self.file_path, note2midi(self.note_manager.to_dict(), self.bpm).length())
 
     def on_button3_click(self):
         self.vst.load_vst()

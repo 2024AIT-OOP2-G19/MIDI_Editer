@@ -46,6 +46,16 @@ def note2midi(note_manager, bpm):
 
 '''midiデータからxy座標へ変換する関数'''
 def midi2note(midi):
+    bpm = 120 # bpmのデフォルト値(もしテンポ情報が見つからなかった場合のフォールバック値)
+    for track in midi.tracks:
+        for msg in track:
+            if msg.type == 'set_tempo':
+                # テンポ情報が見つかった場合
+                tempo = msg.tempo
+                bpm = mido.tempo2bpm(tempo)
+                bpm = int(bpm) # GUI上で整数で表示されているため、int型でbpmを返す
+                print("このデータのbpmは", bpm)
+    
     # midデータを取り出して辞書型の配列に直す
     datas_mid = []
     for midMessage in midi.tracks[0]:
@@ -76,7 +86,7 @@ def midi2note(midi):
             entry = {"id": i//2 + 1, "left_x": datas_mid[i]["time"], "right_x": datas_mid[i+1]["time"], "y_pos": data_mid["note"]}
             note_manager[i//2 + 1] = {"id":entry["id"], "left_x": entry["left_x"], "right_x": entry["right_x"], "y_pos": entry["y_pos"]}
             
-    return note_manager
+    return note_manager, bpm
 
 '''y座標から音の高さに変換する関数'''
 def y2pitch(y):
