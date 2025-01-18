@@ -23,3 +23,5 @@ def save_midi(self, midi: MidiFile, file_path=None):
         )
     midi.save(file_path)
     print(f"MIDI file saved: {file_path}")
+
+    return file_path

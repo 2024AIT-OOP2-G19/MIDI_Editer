@@ -113,16 +113,14 @@ class MainWindow(QMainWindow):
         play_pushing_img = os.path.join('images', '再生押してる.png')
         stop_button_img = os.path.join('images', '一時停止.png')
         stop_pushing_img = os.path.join('images', '一時停止押してる.png')
-        back_button_img = os.path.join('images', '最初.png')
-        back_pushing_img = os.path.join('images', '最初押してる.png')
-        button_widget = QWidget()
-        button_layout = QVBoxLayout(button_widget)
+        self.button_widget = QWidget()
+        button_layout = QVBoxLayout(self.button_widget)
+        self.play_stop_widget = QWidget()
+        play_stop_layout = QHBoxLayout(self.play_stop_widget)
         self.play_button = QPushButton("", self)
         self.set_button_images(self.play_button, play_button_img, play_pushing_img)
         self.stop_button = QPushButton("", self)
         self.set_button_images(self.stop_button, stop_button_img, stop_pushing_img)
-        self.back_button = QPushButton("", self)
-        self.set_button_images(self.back_button, back_button_img, back_pushing_img)
         self.midi_save = QPushButton("MIDI 保存", self)
         self.midi_save.setStyleSheet(button_style1)
         self.sound_write = QPushButton("音声書き出し", self)
@@ -131,10 +129,11 @@ class MainWindow(QMainWindow):
         self.vst_read.setStyleSheet(button_style3)
         self.vst_option = QPushButton("VST 設定", self)
         self.vst_option.setStyleSheet(button_style4)
-        button_layout.addWidget(self.play_button)
-        button_layout.addWidget(self.stop_button)
 
-        button_layout.addWidget(self.back_button)
+        button_layout.addWidget(self.play_stop_widget)
+        play_stop_layout.addWidget(self.play_button)
+        play_stop_layout.addWidget(self.stop_button)
+
         button_layout.addWidget(self.midi_save)
         button_layout.addWidget(self.sound_write)
         button_layout.addWidget(self.vst_read)
@@ -145,13 +144,13 @@ class MainWindow(QMainWindow):
         self.tempo_spinbox.setRange(10, 400)  # BPMの範囲を設定（10～400）
         self.tempo_spinbox.setValue(self.bpm)  # デフォルトのテンポを設定
         self.tempo_spinbox.setSuffix(" BPM")  # スピンボックスに単位を追加
+        self.tempo_spinbox.valueChanged.connect(lambda: self.update_bpm(self.tempo_spinbox.value()))
         button_layout.addWidget(self.tempo_spinbox)
 
         
          # ボタンの外枠と焦点インジケータを完全に消す
         self.play_button.setStyleSheet("border: none; outline: none;")
         self.stop_button.setStyleSheet("border: none; outline: none;")
-        self.back_button.setStyleSheet("border: none; outline: none;")
 
         # ボタンのクリックイベントにスロットを接続
         self.midi_save.clicked.connect(self.on_button1_click)
@@ -160,7 +159,6 @@ class MainWindow(QMainWindow):
         self.vst_option.clicked.connect(self.on_button4_click)
         self.play_button.clicked.connect(self.on_button5_click)
         self.stop_button.clicked.connect(self.on_button6_click)
-        self.back_button.clicked.connect(self.on_button7_click)
 
         button_layout.addStretch()  # ボタン下にスペースを追加
 
@@ -168,9 +166,11 @@ class MainWindow(QMainWindow):
 
         # 右側の部分をさらに分割
         right_splitter = QSplitter(Qt.Horizontal)
+        self.set_hundle_disabled(right_splitter)
 
         # 右側を上下に分割した部分
         top_right_splitter = QSplitter(Qt.Vertical)
+        self.set_hundle_disabled(top_right_splitter)
 
         # 右上にスペース部分（小節と同じ高さ）
         self.space_widget = QWidget()
@@ -192,6 +192,7 @@ class MainWindow(QMainWindow):
 
         # 右側の右部分をさらに上下に分割
         bottom_right_splitter = QSplitter(Qt.Vertical)
+        self.set_hundle_disabled(bottom_right_splitter)
 
         # 右上に小節部分
         self.bar_scene = QGraphicsScene()
@@ -217,8 +218,11 @@ class MainWindow(QMainWindow):
         right_splitter.setStretchFactor(1, 3)  # ピアノロール部分を広げる
 
         # 左右を分割する
-        splitter.addWidget(button_widget)  # ボタンスペース
+        splitter.addWidget(self.button_widget)  # ボタンスペース
         splitter.addWidget(right_splitter)  # 右側部分
+
+        splitter.widget(0).setFixedWidth(130) # ボタンスペースの幅設定
+        self.set_hundle_disabled(splitter)
 
         # メインレイアウトにスプリッターを追加
         main_layout.addWidget(splitter)
@@ -242,6 +246,18 @@ class MainWindow(QMainWindow):
 
         self.vst = Vst()
 
+    def set_hundle_disabled(self, splitter:QSplitter):
+        """
+        splitterのハンドルを無効化
+        """
+        splitter.setStyleSheet(
+            """
+            QSplitter::handle {
+            background: none;
+            }
+            """)
+        splitter.setChildrenCollapsible(False)
+
     def set_button_images(self, button, normal_image, pressed_image):
         """
         ボタンに通常時と押下時の画像を設定
@@ -257,12 +273,15 @@ class MainWindow(QMainWindow):
         button.pressed.connect(lambda: button.setIcon(pressed_icon))
         button.released.connect(lambda: button.setIcon(normal_icon))
 
+    def update_bpm(self, bpm:float):
+        self.bpm = bpm
+        print(f'bpm changed to {self.bpm}!')
 
     def closeEvent(self, event):
         reply = QMessageBox.question(self, "確認", "MIDIファイルを保存しますか？",
                                      QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel, QMessageBox.Cancel)
         if reply == QMessageBox.Yes:
-            save_midi(self, self.midi, self.file_path) # midiファイルを保存
+            self.file_path = save_midi(self, self.midi, self.file_path) # midiファイルを保存
             event.accept()  # ウィンドウを閉じる
         elif reply == QMessageBox.No:
             event.accept()  # ウィンドウを閉じる
@@ -456,7 +475,7 @@ class MainWindow(QMainWindow):
         save_midi(self, self.midi, self.file_path) # midiファイルを保存
 
     def on_button2_click(self):
-        save_midi(self, note2midi(self.note_manager.to_dict(), self.bpm), self.file_path)
+        self.file_path = save_midi(self, note2midi(self.note_manager.to_dict(), self.bpm), self.file_path)
         self.vst.render_audio(self.file_path, note2midi(self.note_manager.to_dict(), self.bpm).length + 4*(60/self.bpm))
 
     def on_button3_click(self):
@@ -466,15 +485,12 @@ class MainWindow(QMainWindow):
         self.vst.vst_editer()
 
     def on_button5_click(self):
-        save_midi(self, note2midi(self.note_manager.to_dict(), self.bpm), self.file_path)
+        self.file_path = save_midi(self, note2midi(self.note_manager.to_dict(), self.bpm), self.file_path)
         self.vst.play_midi_file(self.file_path, note2midi(self.note_manager.to_dict(), self.bpm).length + 4*(60/self.bpm))
 
     def on_button6_click(self):
         self.vst.stop_audio()
         print("停止！！！")
-
-    def on_button7_click(self):
-        print("戻れ！！！")
 
 if __name__ == "__main__":
     # 環境変数にPySide6を登録

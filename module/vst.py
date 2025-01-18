@@ -26,7 +26,7 @@ class Vst():
             self.plugin_name = os.path.splitext(os.path.basename(self.vst_path))[0] # パスからプラグイン名取得
             self.plugin = self.engine.make_plugin_processor(self.plugin_name, self.vst_path)
 
-            assert self.plugin.get_name() == self.plugin_name # プラグインが反映されなかった時にエラー投げる
+            assert self.plugin.get_name() == self.plugin_name # プラグインが反映されなかったらおわる
 
             self.isProcessorExists = True
             self.vst_editer()
@@ -46,7 +46,8 @@ class Vst():
         '''
         if self.isProcessorExists == False:
             self.load_vst()
-            self.render_audio(midi_path, duration)
+            if self.isProcessorExists == True:
+                self.render_audio(midi_path, duration)
             return
         if os.path.exists(midi_path) == False:
             print("!!!file doesnt exists")
@@ -56,7 +57,7 @@ class Vst():
         file,check = QFileDialog.getSaveFileName(None, "名前をつけて保存", wavfile_path,"wavファイル (*.wav)")
 
         if check:
-            self.plugin.load_midi(midi_path, clear_previous=True, beats=True, all_events=True)
+            self.plugin.load_midi(midi_path, clear_previous=True, beats=False, all_events=True)
 
             graph = [
             (self.plugin, []),
