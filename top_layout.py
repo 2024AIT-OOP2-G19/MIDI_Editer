@@ -1,10 +1,9 @@
 import PySide6
-from PySide6.QtWidgets import QApplication, QWidget, QPushButton, QFileDialog, QLabel, QVBoxLayout
+from PySide6.QtWidgets import QApplication, QWidget, QPushButton, QFileDialog, QLabel
 from PySide6.QtGui import QPainter, QColor, QFont
 from PySide6.QtCore import Qt, QRect
 import os
 import sys
-import subprocess
 from main_layout import MainWindow
 
 class PianoBackground(QWidget):  # ピアノの鍵盤を縦に描画するウィジェット
@@ -44,7 +43,7 @@ class TopWindow(QWidget):              # ウィンドウ系クラスを継承す
     def __init__(self, parent=None): # parentは他にウィンドウを表示させる場合に指定する
 
         super().__init__(parent)        # 継承元クラス（ここではQWidget）を初期化
-        self.setWindowTitle("作曲")
+        self.setWindowTitle("MUSIC STUDIO")
         self.resize(400, 300)
 
         # 背景にピアノ鍵盤を設定
