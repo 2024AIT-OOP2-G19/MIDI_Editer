@@ -43,7 +43,7 @@ class TopWindow(QWidget):              # ウィンドウ系クラスを継承す
     def __init__(self, parent=None): # parentは他にウィンドウを表示させる場合に指定する
 
         super().__init__(parent)        # 継承元クラス（ここではQWidget）を初期化
-        self.setWindowTitle("作曲")
+        self.setWindowTitle("MUSIC STUDIO")
         self.resize(400, 300)
 
         # 背景にピアノ鍵盤を設定

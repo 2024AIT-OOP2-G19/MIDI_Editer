@@ -5,9 +5,9 @@ SEMIQUAVER_VALUE = 120  # 音の長さをmidi用に変換するための定数
 MIDI_PITCH_ADJUST= 48  # 音の高さをmidi用に調整するための定数
 VELOCITY = 100 # 音の強さの定数
 
-    
-'''XY座標の値からnoteに変換してmidファイルを生成する関数'''    
+       
 def note2midi(note_manager, bpm):
+    '''XY座標の値からnoteに変換してmidファイルを生成する関数''' 
     # 初めのx座標、終わりのx座標でそれぞれ(on/off, y座標, x座標)のセットに変える
     # 座標の値をそれぞれy座標→note, x座標→time用の長さに変換したものに変える
     datas_noteXY =[]
@@ -30,22 +30,21 @@ def note2midi(note_manager, bpm):
             entry = {"noteEnable": data_noteXY["noteEnable"], "note": data_noteXY["y"], "time": datas_noteXY[i]["x"] - datas_noteXY[i-1]["x"]}
             datas_note.append(entry)
     
-    # 新しいmidiデータを入れるため一度midiデータを初期化
-    mid = []
-    mid = MidiFile()
+    midi = []
+    midi = MidiFile()
     track = MidiTrack()
-    mid.tracks.append(track)
+    midi.tracks.append(track)
     
     # midのtrackにデータを入れる
     track.append(MetaMessage('set_tempo', tempo=mido.bpm2tempo(bpm)))
     for data_note in datas_note:
         track.append(Message(data_note["noteEnable"], note = data_note["note"], velocity = VELOCITY, time = data_note["time"]))
     
-    return mid
+    return midi
 
-'''midiデータからxy座標へ変換する関数'''
 def midi2note(midi):
-    bpm = 120 # bpmのデフォルト値(もしテンポ情報が見つからなかった場合のフォールバック値)
+    '''midiデータからxy座標へ変換する関数'''
+    bpm = 120 # bpmのデフォルト値
     for track in midi.tracks:
         for msg in track:
             if msg.type == 'set_tempo':
@@ -72,11 +71,9 @@ def midi2note(midi):
         data_mid["time"] //= SEMIQUAVER_VALUE
         data_mid["note"] -= MIDI_PITCH_ADJUST
     
-    # midsの値からGUIのブロックにするための変換
     # noteの値, on/offごとにソート
     datas_mid.sort(key=lambda x: (x["note"], x["time"]))
     
-    # note_managerを初期化
     note_manager = {}
     
     # on側とoff側を合体
@@ -87,8 +84,8 @@ def midi2note(midi):
             
     return note_manager, bpm
 
-'''y座標から音の高さに変換する関数'''
 def y2pitch(y):
+    '''y座標から音の高さに変換する関数'''
     pitch = y + MIDI_PITCH_ADJUST
     return pitch
     
