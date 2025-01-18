@@ -1,10 +1,9 @@
 import PySide6
-from PySide6.QtWidgets import QApplication, QWidget, QPushButton, QFileDialog, QLabel, QVBoxLayout
+from PySide6.QtWidgets import QApplication, QWidget, QPushButton, QFileDialog, QLabel
 from PySide6.QtGui import QPainter, QColor, QFont
 from PySide6.QtCore import Qt, QRect
 import os
 import sys
-import subprocess
 from main_layout import MainWindow
 
 class PianoBackground(QWidget):  # ピアノの鍵盤を縦に描画するウィジェット

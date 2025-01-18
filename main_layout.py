@@ -1,8 +1,8 @@
 import PySide6
 from PySide6.QtWidgets import (QApplication, QMainWindow, QGraphicsView, QGraphicsScene,
-    QVBoxLayout, QHBoxLayout, QWidget, QPushButton, QSplitter, QToolBar, QMessageBox, QLabel, QSpinBox, QFileDialog)
-from PySide6.QtGui import QIcon, QBrush, QColor, QPen, QAction
-from PySide6.QtCore import Qt, QPoint
+    QVBoxLayout, QHBoxLayout, QWidget, QPushButton, QSplitter, QMessageBox, QSpinBox)
+from PySide6.QtGui import QIcon, QBrush, QColor, QPen
+from PySide6.QtCore import Qt
 from module.note import Note
 from module.note_manager import NoteManager
 from module.midi_edit import note2midi, midi2note, y2pitch
@@ -12,7 +12,6 @@ from module.midi_rw import save_midi, load_midi
 
 import os
 import sys
-import module 
 
 class MainWindow(QMainWindow):
     def __init__(self, file_path=None):
