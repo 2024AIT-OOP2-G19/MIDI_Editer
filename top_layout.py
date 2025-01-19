@@ -51,9 +51,9 @@ class TopWindow(QWidget):              # ウィンドウ系クラスを継承す
 
         # タイトル
         self.label1 = QLabel("MUSIC", self)
-        self.label1.setGeometry(206, 38, 130, 50)
+        self.label1.setGeometry(215, 40, 140, 60)
         self.label2 = QLabel("STUDIO", self)
-        self.label2.setGeometry(224, 77, 130, 50)
+        self.label2.setGeometry(235, 90, 130, 50)
         
         # フォント設定
         font = QFont("Impact", 44, QFont.Bold)  # フォント名、サイズ、太さを指定
