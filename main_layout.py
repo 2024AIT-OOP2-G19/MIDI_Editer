@@ -342,7 +342,7 @@ class MainWindow(QMainWindow):
             else:
                 color = QColor("black")
                 self.keys_scene.addRect(
-                    10, y + key_height * 0.25, 60, key_height * 0.5, QPen(Qt.black), QBrush(color)
+                    0, y, 80, key_height, QPen(Qt.black), QBrush(color)
                 )
 
         # シーンサイズを設定
