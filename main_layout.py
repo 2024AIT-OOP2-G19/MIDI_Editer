@@ -360,6 +360,13 @@ class MainWindow(QMainWindow):
         # グリッド線を描画
         for i in range(keys):
             y = (keys - i - 1) * key_height  # 鍵盤と同じ順序で下から描画
+
+            black = QColor(20, 20, 20) # 背景の色
+            white = QColor(60, 60, 60)
+            pattern = [white, black, white, black, white, white, black, white, black, white, black, white] # 背景パターン
+            background_color = pattern[(i+5) % len(pattern)] # パターンに合わせて色設定
+            self.roll_scene.addRect(0, y + key_height - self.grid_size, roll_width, key_height, QPen(Qt.black), QBrush(background_color)) # 背景設置
+
             for j in range(0, roll_width, self.grid_size):
                 self.roll_scene.addRect(
                     j, y, self.grid_size, key_height, QPen(Qt.gray), QBrush(Qt.transparent)
