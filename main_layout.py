@@ -471,7 +471,7 @@ class MainWindow(QMainWindow):
     def on_button1_click(self):
         print("保存！")
         self.midi = note2midi(self.note_manager.to_dict(), self.bpm)
-        save_midi(self, self.midi, self.file_path) # midiファイルを保存
+        self.file_path = save_midi(self, self.midi, self.file_path) # midiファイルを保存
 
     def on_button2_click(self):
         self.file_path = save_midi(self, note2midi(self.note_manager.to_dict(), self.bpm), self.file_path)
