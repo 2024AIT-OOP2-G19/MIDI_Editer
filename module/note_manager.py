@@ -2,18 +2,16 @@ class NoteManager:
     def __init__(self, grid_size):
         self.notes = {}  # ノートを管理する辞書: {id: {key, left_x, right_x, y_pos}}
         self.grid_size = grid_size
-        self.next_id = 1  # 次に割り当てるID
 
     def add_note(self, left_x, right_x, y_pos):
         """新しいノートを追加"""
-        note_id = self.next_id
+        note_id = len(self.notes)+1
         self.notes[note_id] = {
             "id": note_id,
             "left_x": left_x,
             "right_x": right_x,
             "y_pos": y_pos,
         }
-        self.next_id += 1
 
         # デバッグ用表示
         print(f"ノートが追加されました: ID={note_id}, left_x={left_x}, right_x={right_x}, y_pos={y_pos}")
@@ -69,4 +67,3 @@ class NoteManager:
     def from_dict(self, data):
         """辞書からノート情報を読み込み"""
         self.notes = data
-        self.next_id = max(data.keys(), default=0) + 1
