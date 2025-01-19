@@ -71,8 +71,8 @@ def midi2note(midi):
         data_mid["time"] //= SEMIQUAVER_VALUE
         data_mid["note"] -= MIDI_PITCH_ADJUST
     
-    # noteの値, on/offごとにソート
-    datas_mid.sort(key=lambda x: (x["note"], x["time"]))
+    # noteの値, timeの値, off→onごとにソート
+    datas_mid.sort(key=lambda x: (x["note"], x["time"], x["noteEnable"]))
     
     note_manager = {}
     
