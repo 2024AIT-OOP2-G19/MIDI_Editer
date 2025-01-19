@@ -280,6 +280,7 @@ class MainWindow(QMainWindow):
         reply = QMessageBox.question(self, "確認", "MIDIファイルを保存しますか？",
                                      QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel, QMessageBox.Cancel)
         if reply == QMessageBox.Yes:
+            self.midi = note2midi(self.note_manager.to_dict(), self.bpm)
             self.file_path = save_midi(self, self.midi, self.file_path) # midiファイルを保存
             event.accept()  # ウィンドウを閉じる
         elif reply == QMessageBox.No:
