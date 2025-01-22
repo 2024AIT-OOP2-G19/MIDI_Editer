@@ -20,7 +20,7 @@ class MainWindow(QMainWindow):
         print(self.file_path)
         
         super().__init__()
-        self.setWindowTitle("MUSIC STUDIO")
+        self.setWindowTitle("Mono Track Studio ")
         self.setGeometry(100, 100, 1500, 1000)
 
         self.grid_size = 20  # グリッドのサイズ
