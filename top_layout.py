@@ -43,22 +43,35 @@ class TopWindow(QWidget):              # ウィンドウ系クラスを継承す
     def __init__(self, parent=None): # parentは他にウィンドウを表示させる場合に指定する
 
         super().__init__(parent)        # 継承元クラス（ここではQWidget）を初期化
-        self.setWindowTitle("MUSIC STUDIO")
+        self.setWindowTitle("Mono Track Studio")
         self.resize(400, 300)
 
         # 背景にピアノ鍵盤を設定
         self.piano_background = PianoBackground(self)
 
         # タイトル
-        self.label1 = QLabel("MUSIC", self)
+        # ラベル1
+        self.label1 = QLabel(self)
+        self.label1.setText('<span style="color:rgb(235, 0, 0);">M</span>ono')
         self.label1.setGeometry(215, 40, 140, 60)
-        self.label2 = QLabel("STUDIO", self)
-        self.label2.setGeometry(235, 90, 130, 50)
+        self.label1.setAlignment(Qt.AlignLeft)
+
+        # ラベル2
+        self.label2 = QLabel(self)
+        self.label2.setText('<span style="color:rgb(235, 0, 0);">T</span>rack')
+        self.label2.setGeometry(237, 90, 140, 60)
+        self.label2.setAlignment(Qt.AlignLeft)
+
+        # ラベル3
+        self.label3 = QLabel(self)
+        self.label3.setText('<span style="color:rgb(235, 0, 0);">S</span>tudio')
+        self.label3.setGeometry(250, 140, 140, 60)
         
         # フォント設定
         font = QFont("Impact", 44, QFont.Bold)  # フォント名、サイズ、太さを指定
         self.label1.setFont(font)
         self.label2.setFont(font)
+        self.label3.setFont(font)
 
         # 1つ目のボタン
         self.button1 = QPushButton("new", self)
